@@ -213,7 +213,7 @@ const closeImageViewer = document.querySelector("#closeImageViewer");
 
 let activeCategory = null;
 let activeScheduleDay = "day-1";
-let deferredPrompt = null;
+const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 
 function getCategoryFromHash() {
   const category = window.location.hash.replace("#", "");
@@ -362,57 +362,42 @@ scheduleDayButtons.forEach((button) => {
 
 window.addEventListener("hashchange", render);
 
-window.addEventListener("beforeinstallprompt", (event) => {
-  event.preventDefault();
-  deferredPrompt = event;
-  installButton.hidden = false;
-});
-
-function showInstallGuide() {
+function showBookmarkGuide() {
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isAndroid = /android/i.test(navigator.userAgent);
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true;
+  const isLocal =
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.hostname.startsWith("192.168.") ||
+    location.hostname.startsWith("172.") ||
+    location.hostname.startsWith("10.");
 
-  if (isStandalone) {
-    installMessage.textContent = "이미 홈 화면 앱처럼 실행 중입니다.";
+  if (isLocal) {
+    installMessage.textContent = `지금 주소는 개발용 미리보기라 PC가 꺼지면 열리지 않습니다. 휴대폰이나 다른 PC에서는 GitHub Pages 주소를 북마크하세요: ${publicAppUrl}`;
   } else if (isIOS) {
     installMessage.textContent =
-      'iPhone은 Safari 하단 공유 버튼을 누른 뒤 "홈 화면에 추가"를 선택하세요.';
-  } else if (isAndroid && !window.isSecureContext) {
-    installMessage.textContent =
-      'Android 앱 설치 팝업은 HTTPS 주소에서만 뜹니다. 지금 로컬 주소에서는 Chrome 메뉴의 "홈 화면에 추가"를 쓰고, 실제 공유용 HTTPS 주소에서는 + 버튼으로 설치할 수 있습니다.';
+      'iPhone은 Safari 공유 버튼을 누른 뒤 "책갈피 추가" 또는 "홈 화면에 추가"를 선택하세요.';
   } else if (isAndroid) {
     installMessage.textContent =
-      'Android Chrome에서 설치 버튼이 안 뜨면 오른쪽 위 메뉴를 누른 뒤 "앱 설치" 또는 "홈 화면에 추가"를 선택하세요.';
+      'Android는 Chrome 오른쪽 위 메뉴를 누른 뒤 별표로 북마크하거나 "홈 화면에 추가"를 선택하세요.';
   } else {
     installMessage.textContent =
-      '브라우저 메뉴에서 "앱 설치" 또는 "홈 화면에 추가"를 선택하세요.';
+      "PC에서는 Ctrl+D를 눌러 북마크에 저장하세요. 저장한 북마크를 누르면 비전트립 앱이 바로 열립니다.";
   }
   installSheet.hidden = false;
 }
 
-function hideInstallGuide() {
+function hideBookmarkGuide() {
   installSheet.hidden = true;
 }
 
-installButton.addEventListener("click", async () => {
-  if (!deferredPrompt) {
-    showInstallGuide();
-    return;
-  }
+installButton.addEventListener("click", showBookmarkGuide);
 
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-});
-
-closeInstallSheet.addEventListener("click", hideInstallGuide);
+closeInstallSheet.addEventListener("click", hideBookmarkGuide);
 
 installSheet.addEventListener("click", (event) => {
   if (event.target === installSheet) {
-    hideInstallGuide();
+    hideBookmarkGuide();
   }
 });
 
