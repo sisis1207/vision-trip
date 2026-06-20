@@ -1,0 +1,19 @@
+{
+  "name": "비전트립",
+  "short_name": "비전트립",
+  "description": "잠깐 쓰고 빠르게 공유하는 모바일 비전트립 PWA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#25524a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

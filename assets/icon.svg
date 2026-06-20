@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="비전트립 아이콘">
+  <rect width="512" height="512" rx="96" fill="#25524a"/>
+  <path d="M152 104h204c20 0 36 16 36 36v284c0 11-9 20-20 20H164c-28 0-52-24-52-52V144c0-22 18-40 40-40Z" fill="#f6f4ef"/>
+  <path d="M152 104h28v340h-16c-28 0-52-24-52-52V144c0-22 18-40 40-40Z" fill="#c28d2e"/>
+  <path d="M216 176h104M216 232h112M216 288h82" fill="none" stroke="#25524a" stroke-width="24" stroke-linecap="round"/>
+</svg>
