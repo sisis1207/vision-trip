@@ -1,7 +1,9 @@
-import { categoryLabels, handbookItems } from "./data.js";
+import { categoryLabels, handbookItems, homeNotices } from "./data.js";
 
 const validCategories = Object.keys(categoryLabels);
 const homeHero = document.querySelector("#homeHero");
+const homeNotice = document.querySelector("#homeNotice");
+const noticeList = document.querySelector("#noticeList");
 const categoryTabs = document.querySelector("#categoryTabs");
 const pageHeader = document.querySelector("#pageHeader");
 const pageTitle = document.querySelector("#pageTitle");
@@ -64,12 +66,14 @@ function openLyrics(songId) {
 
 function showHome() {
   homeHero.hidden = false;
+  homeNotice.hidden = false;
   categoryTabs.hidden = false;
   pageHeader.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
+  renderNotices();
 }
 
 function filterItems() {
@@ -141,6 +145,24 @@ function renderTags(tags = []) {
   return tags.map((tag) => `<span class="pill">${tag}</span>`).join("");
 }
 
+function renderNotices() {
+  if (!homeNotices.length) {
+    homeNotice.hidden = true;
+    return;
+  }
+
+  noticeList.innerHTML = homeNotices
+    .map(
+      (notice) => `
+        <article class="notice-item">
+          <strong>${notice.title}</strong>
+          <p>${notice.body}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
 function renderEntryContent(item) {
   if (item.schedule) {
     return renderSchedule(item.schedule);
@@ -199,6 +221,7 @@ function showLyricsPage() {
   }
 
   homeHero.hidden = true;
+  homeNotice.hidden = true;
   categoryTabs.hidden = true;
   pageHeader.hidden = false;
   scheduleTabs.hidden = true;
@@ -218,6 +241,7 @@ function showLyricsPage() {
 
 function showCategoryPage() {
   homeHero.hidden = true;
+  homeNotice.hidden = true;
   categoryTabs.hidden = true;
   pageHeader.hidden = false;
   list.hidden = false;

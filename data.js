@@ -271,3 +271,11 @@ export const categoryLabels = {
   word: "말씀",
   update: "업데이트",
 };
+
+export const homeNotices = [
+  {
+    title: "알림",
+    body: `● 비전트립 회비 납부 : \n7월 12일까지 김영창 부장님께<br />
+● 비전트립 출발 1~2주전 주일까지 여권 모두 모을겁니다!`,
+  },
+];
