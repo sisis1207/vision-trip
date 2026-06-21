@@ -37,6 +37,7 @@ export const handbookItems = [
   },
   // 일정
   {
+    //1일차
     id: "day-1",
     category: "schedule",
     title: "DAY 1 — 2026.08.11 (화) 일본 선교 시작",
@@ -71,6 +72,7 @@ export const handbookItems = [
     tags: ["일정"],
   },
   {
+    //2일차
     id: "day-2",
     category: "schedule",
     title: "DAY 2 — 2026.08.12 (수) 노방전도(훗카이도국립대학)",
@@ -80,16 +82,16 @@ export const handbookItems = [
       {
         time: "10:30 ~ 12:00",
         title: "노방전도 준비 및 이동",
-        note: "훗카이도국립대학",
       },
       { time: "12:00 ~ 13:00", title: "점심 식사" },
-      { time: "13:00 ~ 18:00", title: "노방전도" },
+      { time: "13:00 ~ 18:00", title: "노방전도", note: "훗카이도국립대학" },
       { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
-      { time: "21:30 ~ 22:30", title: "저녁 집회", note: "간증" },
+      { time: "21:30 ~ 22:30", title: "저녁 집회", note: "간증 - 김준서" },
     ],
     tags: ["일정"],
   },
   {
+    //3일차
     id: "day-3",
     category: "schedule",
     title: "DAY 3 — 2026.08.13 (목) 문화교류",
@@ -138,6 +140,7 @@ export const handbookItems = [
     tags: ["일정"],
   },
   {
+    //4일차
     id: "day-4",
     category: "schedule",
     title: "DAY 4 — 2026.08.14 (금) 비전트립",
@@ -158,6 +161,7 @@ export const handbookItems = [
     tags: ["일정"],
   },
   {
+    //5일차
     id: "day-5",
     category: "schedule",
     title: "DAY 5 — 2026.08.15 (토) 귀국",
@@ -249,19 +253,16 @@ export const handbookItems = [
     body: "볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그와 더불어 먹고 그는 나와 더불어 먹으리라",
     tags: ["말씀", "요한계시록"],
   },
-  // 업데이트
+  // 패치노트
   {
     id: "update-1",
     category: "update",
-    title: "업데이트",
-    body: `2026.06.21 패치노트
-- 1. 업데이트 카테고리 설정
-- 2. 3일차 일정표 수정
-- 3. 4일차 일정표 수정
-- 4. 찬양 가사만 보기 추가
-- 5. 말씀 검색 기능 추가\
-- 6. 홈 알림 기능 추가`,
-    tags: ["업데이트"],
+    title: "2026.06.21",
+    body: `1. 패치노트 카테고리 설정
+2. 1~5일차 일정표 수정
+3. 찬양 가사만 보기 추가
+4. 말씀 검색 기능 추가
+5. 홈 알림 기능 추가`,
   },
 ];
 
@@ -270,12 +271,12 @@ export const categoryLabels = {
   schedule: "일정",
   song: "찬양",
   word: "말씀",
-  update: "업데이트",
+  update: "패치노트",
 };
-
+//알림
 export const homeNotices = [
   {
-    title: "알림",
+    title: "🔔공지🔔",
     body: `<span class="lyric-label">Ⅰ. 비전트립 회비 납부 : 7월 12일까지 김영창 부장<br />
 Ⅱ. 비전트립 출발 1~2주전 주일까지 여권 모두 모을겁니다! `,
   },
