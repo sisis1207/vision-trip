@@ -3,7 +3,7 @@ export const handbookItems = [
   {
     id: "info-1",
     category: "info",
-    title: "안내",
+    title: "정보",
     body: `기간 : 2026.8.11(화) ~ 2026.8.15(토), 4박 5일
 장소 : 삿포로
 교회 : 삿포로 가스펠교회
@@ -96,12 +96,12 @@ export const handbookItems = [
     schedule: [
       {
         section: "문화교류 일정",
-        time: "09:00",
+        time: "08:00",
         title: "기상 및 아침 식사",
       },
       {
         section: "문화교류 일정",
-        time: "10:00 ~ 11:30",
+        time: "09:00 ~ 10:00",
         title: "일본 선교 부흥예배",
       },
       {
@@ -154,7 +154,6 @@ export const handbookItems = [
       { time: "19:00", title: "저녁 식사" },
       { time: "20:00", title: "비전트립 나눔" },
       { time: "21:00", title: "정리 예배" },
-      { time: "~", title: "짐 정리" },
     ],
     tags: ["일정"],
   },
@@ -177,26 +176,78 @@ export const handbookItems = [
   {
     id: "song-1",
     category: "song",
-    title: "꽃들도",
+    title: "꽃들도(花も)",
     body: "",
     image: "./assets/songs/flowers.png",
+    lyrics: `<span class="lyric-label">[ 1 ]</span>
+<span class="lyric-ko">이곳에 생명 샘 솓아나 눈물 골짝 지나갈 때에</span>
+<span class="lyric-ja">코코니 이즈미와 와쿠 나미다오 스기루 토키</span>
+
+<span class="lyric-ko">머잖아 열매 맺히고 웃음 소리 넘쳐나리라</span>
+<span class="lyric-ja">야가테 미오 무스비 와라이고에니 미치루</span>
+
+<span class="lyric-label">[ 2 ]</span>
+<span class="lyric-ko">그 날에 하늘이 열리고 모든 이가 보게 되리라</span>
+<span class="lyric-ja">아오게 텐-와 하라키 보쿠라와 미루다로</span>
+
+<span class="lyric-ko">마침내 꽃들이 피고 영광의 주가 오시리라</span>
+<span class="lyric-ja">야가테 하나와 사키 에이코노 슈가 코라레루</span>
+
+<span class="lyric-label">[ 후렴 ]</span>
+<span class="lyric-ko">꽃들도 구름도 바람도 넓은 바다도</span>
+<span class="lyric-ja">하나모 쿠모모 카제모 오오우미모</span>
+
+<span class="lyric-ko">찬양하라 찬양하라 예수를</span>
+<span class="lyric-ja">카나데요 카나데요 예수오</span>
+
+<span class="lyric-ko">하늘을 울리며 노래해 나의 영혼아</span>
+<span class="lyric-ja">소라니 히비케 우타에 타마시이요</span>
+
+<span class="lyric-ko">은혜의 주 은혜의 주 은혜의 주</span>
+<span class="lyric-ja">메구미오 메구미오 메구미오</span>`,
     tags: ["찬양"],
   },
   {
     id: "song-2",
     category: "song",
-    title: "더 원합니다",
+    title: "더 원합니다(慕い求めます)",
     body: "",
     image: "./assets/songs/more.png",
+    lyrics: `<span class="lyric-ko">예수 사랑합니다 사랑합니다 온 마음 다하여</span>
+<span class="lyric-ja">예수 아이스마스 아이시마스 코코로 소소기</span>
+
+<span class="lyric-ko">오직 주님 한 분만 간절히 더 원합니다</span>
+<span class="lyric-ja">타다 아나타다케 시타이 모토메마스</span>
+
+<span class="lyric-ko">넘쳐나네 넘쳐나네 주를 향한 내 속의 갈망이</span>
+<span class="lyric-ja">아후레루 아후레루 아나타오 시타우 오모이</span>
+
+<span class="lyric-ko">주님께로 날 이끌어 주소서 주님을 더 원합니다</span>
+<span class="lyric-ja">미소바니 히키요세테 슈요 사티이 모토메마스</span>
+`,
     tags: ["찬양"],
   },
   // 말씀
   {
     id: "message-1",
     category: "word",
-    title: "말씀",
-    body: "내용을 직접 수정하세요.",
-    tags: ["말씀"],
+    title: "창세기 1장 1절",
+    body: "태초에 하나님이 천지를 창조하시니라",
+    tags: ["말씀", "창세기"],
+  },
+  {
+    id: "message-2",
+    category: "word",
+    title: "마태복음 11장 28절",
+    body: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라",
+    tags: ["말씀", "마태복음"],
+  },
+  {
+    id: "message-3",
+    category: "word",
+    title: "요한계시록 3장 20절",
+    body: "볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그와 더불어 먹고 그는 나와 더불어 먹으리라",
+    tags: ["말씀", "요한계시록"],
   },
   // 업데이트
   {
@@ -206,7 +257,9 @@ export const handbookItems = [
     body: `2026.06.21 패치노트
 - 1. 업데이트 카테고리 설정
 - 2. 3일차 일정표 수정
-- 3. 4일차 일정표 수정`,
+- 3. 4일차 일정표 수정
+- 4. 찬양 가사만 보기 추가
+- 5. 말씀 검색 기능 추가`,
     tags: ["업데이트"],
   },
 ];

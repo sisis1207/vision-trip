@@ -1,4 +1,4 @@
-const cacheVersion = "v2";
+const cacheVersion = "v4";
 const cacheName = `vision-trip-pwa-${cacheVersion}`;
 const assets = [
   "./",

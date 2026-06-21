@@ -12,6 +12,8 @@ const scheduleTabs = document.querySelector("#scheduleTabs");
 const scheduleDayButtons = Array.from(
   document.querySelectorAll(".schedule-tab"),
 );
+const wordSearch = document.querySelector("#wordSearch");
+const wordSearchInput = document.querySelector("#wordSearchInput");
 const installButton = document.querySelector("#installButton");
 const installSheet = document.querySelector("#installSheet");
 const closeInstallSheet = document.querySelector("#closeInstallSheet");
@@ -22,15 +24,42 @@ const closeImageViewer = document.querySelector("#closeImageViewer");
 
 let activeCategory = null;
 let activeScheduleDay = "day-1";
+let activeLyricsSongId = null;
+let activeWordQuery = "";
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 
+function getHashValue() {
+  const hash = window.location.hash.replace("#", "");
+
+  try {
+    return decodeURIComponent(hash);
+  } catch {
+    return hash;
+  }
+}
+
 function getCategoryFromHash() {
-  const category = window.location.hash.replace("#", "");
+  const category = getHashValue();
   return validCategories.includes(category) ? category : null;
+}
+
+function getLyricsSongIdFromHash() {
+  const hash = getHashValue();
+  if (!hash.startsWith("lyrics/")) return null;
+
+  const songId = hash.replace("lyrics/", "");
+  const song = handbookItems.find(
+    (item) => item.category === "song" && item.id === songId,
+  );
+  return song ? song.id : null;
 }
 
 function openCategory(category) {
   window.location.hash = category;
+}
+
+function openLyrics(songId) {
+  window.location.hash = `lyrics/${songId}`;
 }
 
 function showHome() {
@@ -38,18 +67,34 @@ function showHome() {
   categoryTabs.hidden = false;
   pageHeader.hidden = true;
   scheduleTabs.hidden = true;
+  wordSearch.hidden = true;
   list.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
 }
 
 function filterItems() {
-  return handbookItems.filter((item) => {
+  const items = handbookItems.filter((item) => {
     if (activeCategory !== "schedule") {
       return item.category === activeCategory;
     }
 
     return item.category === "schedule" && item.id === activeScheduleDay;
   });
+
+  if (activeCategory !== "word" || !activeWordQuery) {
+    return items;
+  }
+
+  const query = activeWordQuery.toLowerCase();
+  return items.filter((item) => getSearchText(item).includes(query));
+}
+
+function getSearchText(item) {
+  return [item.title, item.body, ...(item.tags || [])].join(" ").toLowerCase();
+}
+
+function getLyricsSong() {
+  return handbookItems.find((item) => item.id === activeLyricsSongId);
 }
 
 function updateScheduleTabs() {
@@ -66,14 +111,18 @@ function renderSchedule(schedule = []) {
     <div class="schedule-list">
       ${schedule
         .map((event) => {
-          const section =
-            event.section && event.section !== currentSection
-              ? ((currentSection = event.section),
-                `<h4 class="schedule-section">${event.section}</h4>`)
-              : "";
+          const hasNewSection =
+            event.section && event.section !== currentSection;
+          if (hasNewSection) {
+            currentSection = event.section;
+          }
 
           return `
-            ${section}
+            ${
+              hasNewSection
+                ? `<h4 class="schedule-section">${event.section}</h4>`
+                : ""
+            }
             <div class="schedule-card">
               <time>${event.time}</time>
               <div>
@@ -88,39 +137,83 @@ function renderSchedule(schedule = []) {
   `;
 }
 
+function renderTags(tags = []) {
+  return tags.map((tag) => `<span class="pill">${tag}</span>`).join("");
+}
+
+function renderEntryContent(item) {
+  if (item.schedule) {
+    return renderSchedule(item.schedule);
+  }
+
+  if (item.image) {
+    return `<button class="song-image-button" type="button" data-image="${item.image}" data-title="${item.title}"><img class="song-image" src="${item.image}" alt="${item.title} 악보" /></button>`;
+  }
+
+  return `<p>${item.body}</p>`;
+}
+
+function renderLyricsButton(item) {
+  if (!item.lyrics) return "";
+
+  return `<button class="lyrics-button" type="button" data-lyrics-id="${item.id}" title="${item.title} 가사만 보기" aria-label="${item.title} 가사만 보기">♪</button>`;
+}
+
+function renderEntry(item) {
+  return `
+    <article class="entry">
+      <div>
+        <div class="entry-title-row">
+          <h3>${item.title}</h3>
+          ${renderLyricsButton(item)}
+        </div>
+        ${renderEntryContent(item)}
+        <div class="meta">
+          ${renderTags(item.tags)}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
 function renderList() {
   const items = filterItems();
 
   if (!items.length) {
-    list.innerHTML = '<div class="empty-state">등록된 내용이 없습니다.</div>';
+    list.innerHTML =
+      activeCategory === "word" && activeWordQuery
+        ? '<div class="empty-state">검색 결과가 없습니다.</div>'
+        : '<div class="empty-state">등록된 내용이 없습니다.</div>';
     return;
   }
 
-  list.innerHTML = items
-    .map((item) => {
-      const tags = item.tags
-        .map((tag) => `<span class="pill">${tag}</span>`)
-        .join("");
+  list.innerHTML = items.map(renderEntry).join("");
+}
 
-      return `
-        <article class="entry">
-          <div>
-            <h3>${item.title}</h3>
-            ${
-              item.schedule
-                ? renderSchedule(item.schedule)
-                : item.image
-                  ? `<button class="song-image-button" type="button" data-image="${item.image}" data-title="${item.title}"><img class="song-image" src="${item.image}" alt="${item.title} 악보" /></button>`
-                  : `<p>${item.body}</p>`
-            }
-            <div class="meta">
-              ${tags}
-            </div>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+function showLyricsPage() {
+  const song = getLyricsSong();
+
+  if (!song) {
+    openCategory("song");
+    return;
+  }
+
+  homeHero.hidden = true;
+  categoryTabs.hidden = true;
+  pageHeader.hidden = false;
+  scheduleTabs.hidden = true;
+  wordSearch.hidden = true;
+  list.hidden = false;
+  pageTitle.textContent = `${song.title} 가사`;
+  tabs.forEach((tab) => tab.classList.remove("active"));
+  list.innerHTML = `
+    <article class="entry lyrics-entry">
+      <div>
+        <h3>${song.title}</h3>
+        <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>
+      </div>
+    </article>
+  `;
 }
 
 function showCategoryPage() {
@@ -133,10 +226,18 @@ function showCategoryPage() {
     tab.classList.toggle("active", tab.dataset.category === activeCategory),
   );
   updateScheduleTabs();
+  wordSearch.hidden = activeCategory !== "word";
   renderList();
 }
 
 function render() {
+  activeLyricsSongId = getLyricsSongIdFromHash();
+  if (activeLyricsSongId) {
+    activeCategory = null;
+    showLyricsPage();
+    return;
+  }
+
   activeCategory = getCategoryFromHash();
 
   if (!activeCategory) {
@@ -154,6 +255,11 @@ tabs.forEach((tab) => {
 });
 
 backButton.addEventListener("click", () => {
+  if (activeLyricsSongId) {
+    openCategory("song");
+    return;
+  }
+
   history.pushState(
     "",
     document.title,
@@ -167,6 +273,11 @@ scheduleDayButtons.forEach((button) => {
     activeScheduleDay = button.dataset.day;
     render();
   });
+});
+
+wordSearchInput.addEventListener("input", () => {
+  activeWordQuery = wordSearchInput.value.trim();
+  renderList();
 });
 
 window.addEventListener("hashchange", render);
@@ -223,9 +334,16 @@ function hideImageViewer() {
 }
 
 list.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-image]");
-  if (!button) return;
-  openImageViewer(button.dataset.image, button.dataset.title);
+  const imageButton = event.target.closest("[data-image]");
+  if (imageButton) {
+    openImageViewer(imageButton.dataset.image, imageButton.dataset.title);
+    return;
+  }
+
+  const lyricsButton = event.target.closest("[data-lyrics-id]");
+  if (lyricsButton) {
+    openLyrics(lyricsButton.dataset.lyricsId);
+  }
 });
 
 closeImageViewer.addEventListener("click", hideImageViewer);

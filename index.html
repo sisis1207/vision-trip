@@ -39,9 +39,13 @@
       <main>
         <section class="hero" id="homeHero" aria-labelledby="heroTitle">
           <div class="hero-copy">
-            <p class="label">이촌동교회 비전트립</p>
+            <p class="label">이촌동교회 삿포로 비전트립</p>
             <h2 id="heroTitle">비전트립 정보</h2>
-            <p>안내, 일정, 찬양, 말씀, 업데이트 정보를 확인 할 수 있습니다.</p>
+            <p>
+              ● 비전트립 회비 납부 : 7월 12일까지 김영창 부장님께<br />
+              ● 비전트립 출발 1~2주전 주일까지 여권 모두 모을겁니다!<br />
+              ● 단체 티셔츠 사이즈 : S, M, L, XL, XXL<br />
+            </p>
           </div>
           <div class="hero-panel" aria-label="오늘의 핵심 안내">
             <span>일정</span>
@@ -57,9 +61,7 @@
             일정
           </button>
           <button class="tab" type="button" data-category="song">찬양</button>
-          <button class="tab" type="button" data-category="word">
-            말씀
-          </button>
+          <button class="tab" type="button" data-category="word">말씀</button>
           <button class="tab" type="button" data-category="update">
             업데이트
           </button>
@@ -71,6 +73,16 @@
             <p class="eyebrow">Vision Trip</p>
             <h2 id="pageTitle">안내</h2>
           </div>
+        </section>
+
+        <section class="word-search" id="wordSearch" hidden>
+          <label class="sr-only" for="wordSearchInput">말씀 검색</label>
+          <input
+            id="wordSearchInput"
+            type="search"
+            autocomplete="off"
+            placeholder="말씀 검색"
+          />
         </section>
 
         <nav
@@ -126,7 +138,14 @@
         </section>
 
         <section class="image-viewer" id="imageViewer" hidden>
-          <button class="image-close" id="closeImageViewer" type="button" aria-label="닫기">×</button>
+          <button
+            class="image-close"
+            id="closeImageViewer"
+            type="button"
+            aria-label="닫기"
+          >
+            ×
+          </button>
           <img id="viewerImage" src="" alt="" />
         </section>
       </main>

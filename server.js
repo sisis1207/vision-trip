@@ -12,14 +12,15 @@ const types = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".png": "image/png",
   ".webmanifest": "application/manifest+json; charset=utf-8",
-  ".svg": "image/svg+xml; charset=utf-8"
+  ".svg": "image/svg+xml; charset=utf-8",
 };
 
 function send(res, status, body, type = "text/plain; charset=utf-8") {
   res.writeHead(status, {
     "Content-Type": type,
-    "Cache-Control": "no-store"
+    "Cache-Control": "no-store",
   });
   res.end(body);
 }
@@ -31,7 +32,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-store",
-      Connection: "keep-alive"
+      Connection: "keep-alive",
     });
     res.write("\n");
     liveReloadClients.add(res);
@@ -45,8 +46,8 @@ const server = http.createServer((req, res) => {
     requestedPath = "/index.html";
   }
 
-  const filePath = path.normalize(path.join(root, requestedPath));
-  if (!filePath.startsWith(root)) {
+  const filePath = path.resolve(root, `.${requestedPath}`);
+  if (!filePath.startsWith(`${root}${path.sep}`) && filePath !== root) {
     send(res, 403, "Forbidden");
     return;
   }
@@ -86,6 +87,7 @@ function broadcastReload(fileName) {
 
 fs.watch(root, { recursive: true }, (eventType, fileName) => {
   if (!fileName) return;
+  if (fileName.includes(".git")) return;
   if (fileName.includes("node_modules")) return;
   broadcastReload(fileName);
 });
