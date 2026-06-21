@@ -262,7 +262,8 @@ export const handbookItems = [
 2. 1~5일차 일정표 수정
 3. 찬양 가사만 보기 추가
 4. 말씀 검색 기능 추가
-5. 홈 알림 기능 추가`,
+5. 홈 알림 기능 추가
+6. 공지 추가`,
   },
 ];
 
@@ -276,7 +277,7 @@ export const categoryLabels = {
 //알림
 export const homeNotices = [
   {
-    title: "🔔공지🔔",
+    title: "🔴공지",
     body: `<span class="lyric-label">Ⅰ. 비전트립 회비 납부 : 7월 12일까지 김영창 부장<br />
 Ⅱ. 비전트립 출발 1~2주전 주일까지 여권 모두 모을겁니다! `,
   },
