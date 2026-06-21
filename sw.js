@@ -1,4 +1,4 @@
-const cacheVersion = "v6";
+const cacheVersion = "v7";
 const cacheName = `vision-trip-pwa-${cacheVersion}`;
 const assets = [
   "./",
@@ -51,6 +51,6 @@ self.addEventListener("fetch", (event) => {
           }
           return undefined;
         });
-    })
+      }),
   );
 });
