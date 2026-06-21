@@ -85,7 +85,7 @@ const handbookItems = [
       { time: "12:00 ~ 13:00", title: "점심 식사" },
       { time: "13:00 ~ 18:00", title: "노방전도" },
       { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
-      { time: "21:30 ~ 22:30", title: "저녁 집회", note: "간증 - 김준서" },
+      { time: "21:30 ~ 22:30", title: "저녁 집회", note: "간증" },
     ],
     tags: ["일정"],
   },
@@ -108,18 +108,18 @@ const handbookItems = [
         section: "문화교류 세부일정표",
         time: "12:00 ~ 15:00",
         title: "점심 식사 및 문화교류 준비",
+        note: "13~21시까지 히마와리 회관 대여 / 필요 물품 구매 / 문화 교류 준비",
       },
       {
         section: "문화교류 세부일정표",
         time: "16:30",
         title: "문화교류 시작",
-        note: "K-POP 댄스 \n노래 \n레크리에이션",
+        note: "K-POP 댄스 / 노래 / 레크리에이션 / 18:00 K-푸드 시식회",
       },
-      { section: "문화교류 세부일정표", time: "18:00", title: "K-푸드 시식회" },
       {
         section: "문화교류 세부일정표",
         time: "19:30",
-        title: "정리 및 마무리, 숙소 복귀",
+        title: "정리 및 마무리",
       },
       { section: "문화교류 세부일정표", time: "21:30", title: "저녁 예배" },
     ],
@@ -132,8 +132,8 @@ const handbookItems = [
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
       { time: "09:00", title: "아침 예배" },
-      { time: "10:00", title: "조별 모임" },
-      { time: "10:30", title: "비전트립", note: "조별 비전트립" },
+      { time: "09:30", title: "조별 모임" },
+      { time: "10:00", title: "비전트립", note: "점심 식사 / 트립 내용 기록" },
       { time: "18:00", title: "숙소 복귀" },
       { time: "19:00", title: "저녁 식사" },
       { time: "20:00", title: "비전트립 나눔" },
@@ -182,6 +182,15 @@ const handbookItems = [
     body: "내용을 직접 수정하세요.",
     tags: ["말씀"],
   },
+  // 업데이트
+  {
+    id: "update-1",
+    category: "update",
+    title: "업데이트",
+    body: `2026.06.21
+- 업데이트 내용을 여기에 적으세요.`,
+    tags: ["업데이트"],
+  },
 ];
 
 const categoryLabels = {
@@ -189,6 +198,7 @@ const categoryLabels = {
   schedule: "일정",
   song: "찬양",
   word: "말씀",
+  update: "업데이트",
 };
 
 const validCategories = Object.keys(categoryLabels);
