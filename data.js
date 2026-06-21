@@ -95,33 +95,45 @@ export const handbookItems = [
     title: "DAY 3 — 2026.08.13 (목) 문화교류",
     schedule: [
       {
-        section: "문화교류 세부일정표",
-        time: "08:00",
+        section: "문화교류 일정",
+        time: "09:00",
         title: "기상 및 아침 식사",
       },
       {
-        section: "문화교류 세부일정표",
-        time: "10:00 ~ 11:00",
+        section: "문화교류 일정",
+        time: "10:00 ~ 11:30",
         title: "일본 선교 부흥예배",
       },
       {
-        section: "문화교류 세부일정표",
-        time: "12:00 ~ 15:00",
-        title: "점심 식사 및 문화교류 준비",
-        note: "13~21시까지 히마와리 회관 대여 / 필요 물품 구매 / 문화 교류 준비",
+        section: "문화교류 일정",
+        time: "~ 12:30",
+        title: "휴식 및 이동",
+        note: "장보기, 필요 물품 구매, 리허설, 재료손질등 ",
       },
       {
-        section: "문화교류 세부일정표",
+        section: "문화교류 일정",
+        time: "16:00",
+        title: "여는 예배",
+        note: "- 찬양 ( 꽃들도, 더 원합니다 )",
+      },
+      {
+        section: "문화교류 일정",
         time: "16:30",
         title: "문화교류 시작",
-        note: "K-POP 댄스 / 노래 / 레크리에이션 / 18:00 K-푸드 시식회",
+        note: "- K-pop 댄스(같이 춤 배우고 릴스 찍기)\n- 노래\n- 레크리에이션",
       },
       {
-        section: "문화교류 세부일정표",
-        time: "19:30",
-        title: "정리 및 마무리",
+        section: "문화교류 일정",
+        time: "18:00",
+        title: "k-푸드 시식회",
+        note: "저녁식사",
       },
-      { section: "문화교류 세부일정표", time: "21:30", title: "저녁 예배" },
+      {
+        section: "문화교류 일정",
+        time: "19:30",
+        title: "정리 및 마무리, 숙소복귀",
+      },
+      { section: "문화교류 일정", time: "21:30", title: "저녁 예배" },
     ],
     tags: ["일정"],
   },
@@ -131,10 +143,14 @@ export const handbookItems = [
     title: "DAY 4 — 2026.08.14 (금) 비전트립",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
-      { time: "09:00", title: "아침 예배" },
-      { time: "09:30", title: "조별 모임" },
-      { time: "10:00", title: "비전트립", note: "점심 식사 / 트립 내용 기록" },
-      { time: "18:00", title: "숙소 복귀" },
+      { time: "08:30", title: "아침 예배" },
+      { time: "09:00", title: "조별 모임" },
+      {
+        time: "09:30",
+        title: "비전트립",
+        note: "점심 식사 / 여행 / 기념품 구매",
+      },
+      { time: "18:30", title: "숙소 복귀" },
       { time: "19:00", title: "저녁 식사" },
       { time: "20:00", title: "비전트립 나눔" },
       { time: "21:00", title: "정리 예배" },
@@ -187,8 +203,10 @@ export const handbookItems = [
     id: "update-1",
     category: "update",
     title: "업데이트",
-    body: `2026.06.21
-- 업데이트 내용을 여기에 적으세요.`,
+    body: `2026.06.21 패치노트
+- 1. 업데이트 카테고리 설정
+- 2. 3일차 일정표 수정
+- 3. 4일차 일정표 수정`,
     tags: ["업데이트"],
   },
 ];
