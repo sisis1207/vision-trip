@@ -2,6 +2,8 @@
 
 몇 명이 잠깐 쓰는 모바일 비전트립 앱을 위한 의존성 없는 PWA입니다.
 
+실제 작업 폴더는 `D:\Codex\handbook-pwa`입니다. 다른 위치에 남아 있는 복사본은 배포에 반영되지 않을 수 있습니다.
+
 ## 실행
 
 ```powershell
@@ -17,11 +19,29 @@ http://localhost:5173
 
 ## 내용 수정
 
-비전트립 항목은 `app.js`의 `handbookItems` 배열에서 수정합니다.
+비전트립 항목은 `data.js`의 `handbookItems` 배열에서 수정합니다.
 
 수정 후 브라우저를 새로고침하면 바로 반영됩니다.
 
 개발 서버가 켜져 있으면 파일 저장 시 PC와 같은 와이파이의 휴대폰 화면이 자동으로 새로고침됩니다.
+
+## 올리기
+
+수정한 내용을 GitHub Pages까지 올릴 때는 커밋 메시지를 붙여서 한 번에 실행합니다.
+
+```powershell
+npm.cmd run publish -- "수정 내용"
+```
+
+이 명령은 문법 검사, 커밋, GitHub 푸시를 순서대로 실행합니다.
+
+검사만 하고 싶을 때는 다음 명령을 실행합니다.
+
+```powershell
+npm.cmd run check
+```
+
+휴대폰에서 예전 화면이 계속 보이면 `sw.js`의 `cacheVersion` 값을 `v3`, `v4`처럼 올린 뒤 다시 publish 합니다.
 
 ## VS Code에서 미리보기
 

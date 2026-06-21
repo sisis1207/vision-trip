@@ -1,14 +1,16 @@
-const cacheName = "vision-trip-pwa-v1";
+const cacheVersion = "v2";
+const cacheName = `vision-trip-pwa-${cacheVersion}`;
 const assets = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./data.js",
   "./manifest.webmanifest",
   "./assets/icon.svg",
   "./assets/paper-texture.svg",
   "./assets/songs/flowers.png",
-  "./assets/songs/more.png"
+  "./assets/songs/more.png",
 ];
 
 self.addEventListener("install", (event) => {
@@ -20,7 +22,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== cacheName).map((key) => caches.delete(key))))
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== cacheName)
+            .map((key) => caches.delete(key)),
+        ),
+      ),
   );
   self.clients.claim();
 });
