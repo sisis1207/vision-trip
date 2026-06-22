@@ -1,14 +1,12 @@
 :root {
   color-scheme: light;
   --bg: #f6f4ef;
-  --surface: #ffffff;
   --ink: #17211f;
   --muted: #66706c;
   --line: #d9ddd5;
   --accent: #25524a;
   --accent-strong: #153b36;
   --gold: #c28d2e;
-  --rose: #bf5a58;
   --shadow: 0 18px 40px rgba(23, 33, 31, 0.12);
 }
 
@@ -214,13 +212,6 @@ h1 {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 12px 28px rgba(23, 33, 31, 0.08);
-}
-
-.notice-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 12px;
 }
 
 .notice-list {

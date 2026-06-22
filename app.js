@@ -64,6 +64,16 @@ function openLyrics(songId) {
   window.location.hash = `lyrics/${songId}`;
 }
 
+function isLocalPreviewHost() {
+  return (
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.hostname.startsWith("192.168.") ||
+    location.hostname.startsWith("172.") ||
+    location.hostname.startsWith("10.")
+  );
+}
+
 function showHome() {
   homeHero.hidden = false;
   homeNotice.hidden = false;
@@ -309,14 +319,8 @@ window.addEventListener("hashchange", render);
 function showBookmarkGuide() {
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isAndroid = /android/i.test(navigator.userAgent);
-  const isLocal =
-    location.hostname === "localhost" ||
-    location.hostname === "127.0.0.1" ||
-    location.hostname.startsWith("192.168.") ||
-    location.hostname.startsWith("172.") ||
-    location.hostname.startsWith("10.");
 
-  if (isLocal) {
+  if (isLocalPreviewHost()) {
     installMessage.textContent = `지금 주소는 개발용 미리보기라 PC가 꺼지면 열리지 않습니다. 휴대폰이나 다른 PC에서는 GitHub Pages 주소를 북마크하세요: ${publicAppUrl}`;
   } else if (isIOS) {
     installMessage.textContent =
@@ -390,7 +394,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-if ("EventSource" in window) {
+if ("EventSource" in window && isLocalPreviewHost()) {
   const liveReload = new EventSource("./__events");
   liveReload.addEventListener("reload", () => {
     window.location.reload();
