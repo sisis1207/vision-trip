@@ -492,8 +492,23 @@ function showLyricsPage() {
       <div>
         <div class="lyrics-header">
           <h3>${song.title}</h3>
-          <button class="lyrics-size-button" type="button" data-lyrics-size-toggle>
-            ${lyricsLarge ? "기본 크기" : "크게 보기"}
+          <button
+            class="lyrics-size-button ${lyricsLarge ? "active" : ""}"
+            type="button"
+            data-lyrics-size-toggle
+            title="${lyricsLarge ? "기본 크기" : "크게 보기"}"
+            aria-label="${lyricsLarge ? "가사 기본 크기로 보기" : "가사 크게 보기"}"
+          >
+            <svg
+              class="lyrics-zoom-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle cx="10.5" cy="10.5" r="5.5"></circle>
+              <path d="m15 15 4 4"></path>
+              <path d="M8 10.5h5"></path>
+              ${lyricsLarge ? "" : '<path d="M10.5 8v5"></path>'}
+            </svg>
           </button>
         </div>
         <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>

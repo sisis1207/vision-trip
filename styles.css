@@ -296,15 +296,6 @@ h1 {
 }
 
 .today-toggle {
-  border: 1px solid rgba(37, 82, 74, 0.2);
-  border-radius: 8px;
-  color: var(--accent-strong);
-  background: rgba(255, 255, 255, 0.9);
-  font-size: 0.85rem;
-  font-weight: 800;
-}
-
-.today-toggle {
   justify-self: stretch;
   display: inline-flex;
   align-items: center;
@@ -319,6 +310,8 @@ h1 {
   color: var(--muted);
   background: transparent;
   box-shadow: none;
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .today-toggle::before {
@@ -658,18 +651,49 @@ h1 {
 
 .lyrics-header h3 {
   margin: 0;
+  min-width: 0;
 }
 
 .lyrics-size-button {
   flex: 0 0 auto;
-  min-height: 34px;
-  padding: 0 12px;
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
   border: 1px solid rgba(37, 82, 74, 0.18);
   border-radius: 8px;
   color: var(--accent-strong);
-  background: rgba(37, 82, 74, 0.08);
-  font-size: 0.86rem;
-  font-weight: 800;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(37, 82, 74, 0.08));
+  box-shadow: 0 8px 18px rgba(23, 33, 31, 0.08);
+  transition:
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.lyrics-size-button:hover {
+  border-color: rgba(37, 82, 74, 0.38);
+  transform: translateY(-1px);
+}
+
+.lyrics-size-button.active {
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(37, 82, 74, 0.96), var(--accent-strong));
+  box-shadow: 0 10px 22px rgba(21, 59, 54, 0.2);
+}
+
+.lyrics-zoom-icon {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
 }
 
 .lyrics-text {
@@ -873,15 +897,6 @@ h1 {
 
   .schedule-card {
     grid-template-columns: 1fr;
-  }
-
-  .lyrics-header {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .lyrics-size-button {
-    width: 100%;
   }
 
   .checklist-form,
