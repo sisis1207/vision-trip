@@ -11,8 +11,6 @@ const todayScheduleList = document.querySelector("#todayScheduleList");
 const todayDayBadge = document.querySelector("#todayDayBadge");
 const todayToggle = document.querySelector("#todayToggle");
 const categoryTabs = document.querySelector("#categoryTabs");
-const homeActions = document.querySelector("#homeActions");
-const patchNotesButton = document.querySelector("#patchNotesButton");
 const pageHeader = document.querySelector("#pageHeader");
 const pageTitle = document.querySelector("#pageTitle");
 const backButton = document.querySelector("#backButton");
@@ -37,6 +35,7 @@ let activeScheduleDay = "day-1";
 let activeLyricsSongId = null;
 let activeWordQuery = "";
 let todayExpanded = false;
+let lyricsLarge = false;
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
 const checklistStorageKey = "visionTripChecklist";
@@ -83,6 +82,7 @@ function openCategory(category) {
 }
 
 function openLyrics(songId) {
+  lyricsLarge = false;
   window.location.hash = `lyrics/${songId}`;
 }
 
@@ -99,7 +99,6 @@ function isLocalPreviewHost() {
 function showHome() {
   homeHero.hidden = false;
   categoryTabs.hidden = false;
-  homeActions.hidden = false;
   pageHeader.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
@@ -481,7 +480,6 @@ function showLyricsPage() {
 
   homeHero.hidden = true;
   categoryTabs.hidden = true;
-  homeActions.hidden = true;
   pageHeader.hidden = false;
   todayScheduleCard.hidden = true;
   scheduleTabs.hidden = true;
@@ -490,9 +488,14 @@ function showLyricsPage() {
   pageTitle.textContent = `${song.title} 가사`;
   tabs.forEach((tab) => tab.classList.remove("active"));
   list.innerHTML = `
-    <article class="entry lyrics-entry">
+    <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}">
       <div>
-        <h3>${song.title}</h3>
+        <div class="lyrics-header">
+          <h3>${song.title}</h3>
+          <button class="lyrics-size-button" type="button" data-lyrics-size-toggle>
+            ${lyricsLarge ? "기본 크기" : "크게 보기"}
+          </button>
+        </div>
         <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>
       </div>
     </article>
@@ -502,7 +505,6 @@ function showLyricsPage() {
 function showCategoryPage() {
   homeHero.hidden = true;
   categoryTabs.hidden = true;
-  homeActions.hidden = true;
   pageHeader.hidden = false;
   todayScheduleCard.hidden = true;
   list.hidden = false;
@@ -548,10 +550,6 @@ tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     openCategory(tab.dataset.category);
   });
-});
-
-patchNotesButton.addEventListener("click", () => {
-  openCategory("update");
 });
 
 backButton.addEventListener("click", () => {
@@ -633,6 +631,12 @@ function hideImageViewer() {
 }
 
 list.addEventListener("click", (event) => {
+  if (event.target.closest("[data-lyrics-size-toggle]")) {
+    lyricsLarge = !lyricsLarge;
+    showLyricsPage();
+    return;
+  }
+
   const imageButton = event.target.closest("[data-image]");
   if (imageButton) {
     openImageViewer(imageButton.dataset.image, imageButton.dataset.title);

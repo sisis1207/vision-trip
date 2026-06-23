@@ -295,8 +295,7 @@ h1 {
   white-space: nowrap;
 }
 
-.today-toggle,
-.patch-link {
+.today-toggle {
   border: 1px solid rgba(37, 82, 74, 0.2);
   border-radius: 8px;
   color: var(--accent-strong);
@@ -397,63 +396,6 @@ h1 {
   color: inherit;
   font-size: 0.9rem;
   line-height: 1.4;
-}
-
-.home-actions {
-  margin: 175px 0 12px;
-}
-
-.patch-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  width: 100%;
-  min-height: 44px;
-  padding: 0 18px;
-  border-color: rgba(37, 82, 74, 0.12);
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.64);
-  box-shadow: 0 8px 18px rgba(23, 33, 31, 0.05);
-  text-align: left;
-}
-
-.patch-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.patch-icon {
-  position: relative;
-  width: 14px;
-  height: 16px;
-  border: 1.5px solid currentColor;
-  border-radius: 3px;
-  opacity: 0.7;
-}
-
-.patch-icon::before,
-.patch-icon::after {
-  content: "";
-  position: absolute;
-  left: 3px;
-  right: 3px;
-  height: 1.5px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
-.patch-icon::before {
-  top: 5px;
-}
-
-.patch-icon::after {
-  top: 9px;
-}
-
-.patch-version {
-  font-weight: 700;
 }
 
 .tab {
@@ -706,8 +648,28 @@ h1 {
   font-weight: 800;
 }
 
-.lyrics-entry h3 {
+.lyrics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 14px;
+}
+
+.lyrics-header h3 {
+  margin: 0;
+}
+
+.lyrics-size-button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(37, 82, 74, 0.18);
+  border-radius: 8px;
+  color: var(--accent-strong);
+  background: rgba(37, 82, 74, 0.08);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .lyrics-text {
@@ -719,6 +681,19 @@ h1 {
   color: var(--ink);
   font-size: 1rem;
   line-height: 1.45;
+}
+
+.lyrics-entry.large .lyrics-text {
+  font-size: 1.22rem;
+  line-height: 1.58;
+}
+
+.lyrics-entry.large .lyric-ko {
+  margin-top: 10px;
+}
+
+.lyrics-entry.large .lyric-ja {
+  margin-top: 3px;
 }
 
 .lyric-label,
@@ -898,6 +873,15 @@ h1 {
 
   .schedule-card {
     grid-template-columns: 1fr;
+  }
+
+  .lyrics-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lyrics-size-button {
+    width: 100%;
   }
 
   .checklist-form,

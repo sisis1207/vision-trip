@@ -258,17 +258,6 @@ export const handbookItems = [
     body: "볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그와 더불어 먹고 그는 나와 더불어 먹으리라",
     tags: ["말씀", "요한계시록"],
   },
-  // 패치노트
-  {
-    id: "update-1",
-    category: "update",
-    title: "2026.06.21",
-    body: `1. 패치노트 카테고리 설정
-2. 1~5일차 일정표 수정
-3. 찬양 가사만 보기 추가
-4. 말씀 검색 기능 추가
-5. 공지 추가`,
-  },
 ];
 
 export const categoryLabels = {
@@ -278,5 +267,4 @@ export const categoryLabels = {
   word: "말씀",
   memo: "메모",
   checklist: "준비물",
-  update: "패치노트",
 };
