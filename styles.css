@@ -158,7 +158,11 @@ h1 {
   border: 1px solid rgba(37, 82, 74, 0.2);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.64)),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.64)
+    ),
     url("./assets/paper-texture.svg");
   background-size: cover;
   box-shadow: var(--shadow);
@@ -396,7 +400,7 @@ h1 {
 }
 
 .home-actions {
-  margin: 30px 0 12px;
+  margin: 100px 0 12px;
 }
 
 .patch-link {
