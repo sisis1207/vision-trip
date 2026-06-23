@@ -38,18 +38,7 @@ let todayExpanded = false;
 let lyricsLarge = false;
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
-const checklistStorageKey = "visionTripChecklist";
 const koreaTimeZone = "Asia/Seoul";
-const defaultChecklistItems = [
-  "여권",
-  "엔화",
-  "보조배터리",
-  "충전기",
-  "성경책",
-  "개인 상비약",
-  "세면도구",
-];
-let checklistItems = loadChecklistItems();
 
 function getHashValue() {
   const hash = window.location.hash.replace("#", "");
@@ -97,6 +86,7 @@ function isLocalPreviewHost() {
 }
 
 function showHome() {
+  installButton.hidden = false;
   homeHero.hidden = false;
   categoryTabs.hidden = false;
   pageHeader.hidden = true;
@@ -372,104 +362,6 @@ function renderMemoPage() {
   });
 }
 
-function createDefaultChecklistItems() {
-  return defaultChecklistItems.map((text, index) => ({
-    id: `default-${index}`,
-    text,
-    checked: false,
-  }));
-}
-
-function loadChecklistItems() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(checklistStorageKey));
-    if (Array.isArray(saved)) return saved;
-  } catch {
-    // Fall back to defaults when saved data is missing or invalid.
-  }
-
-  return createDefaultChecklistItems();
-}
-
-function saveChecklistItems() {
-  try {
-    localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
-  } catch {
-    // localStorage can be unavailable in private or restricted browser modes.
-  }
-}
-
-function renderChecklistPage() {
-  list.replaceChildren();
-
-  const article = document.createElement("article");
-  article.className = "entry tool-entry";
-
-  const form = document.createElement("form");
-  form.className = "checklist-form";
-
-  const input = document.createElement("input");
-  input.type = "text";
-  input.placeholder = "준비물 추가";
-  input.autocomplete = "off";
-
-  const addButton = document.createElement("button");
-  addButton.type = "submit";
-  addButton.textContent = "추가";
-
-  const items = document.createElement("div");
-  items.className = "checklist-items";
-
-  form.append(input, addButton);
-  article.append(form, items);
-  list.append(article);
-
-  checklistItems.forEach((item) => {
-    const row = document.createElement("div");
-    row.className = "checklist-item";
-
-    const label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = Boolean(item.checked);
-    checkbox.addEventListener("change", () => {
-      item.checked = checkbox.checked;
-      saveChecklistItems();
-    });
-
-    const text = document.createElement("span");
-    text.textContent = item.text;
-
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.textContent = "삭제";
-    deleteButton.addEventListener("click", () => {
-      checklistItems = checklistItems.filter((target) => target.id !== item.id);
-      saveChecklistItems();
-      renderChecklistPage();
-    });
-
-    label.append(checkbox, text);
-    row.append(label, deleteButton);
-    items.append(row);
-  });
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-
-    checklistItems.push({
-      id: `custom-${Date.now()}`,
-      text,
-      checked: false,
-    });
-    input.value = "";
-    saveChecklistItems();
-    renderChecklistPage();
-  });
-}
-
 function showLyricsPage() {
   const song = getLyricsSong();
 
@@ -478,6 +370,7 @@ function showLyricsPage() {
     return;
   }
 
+  installButton.hidden = true;
   homeHero.hidden = true;
   categoryTabs.hidden = true;
   pageHeader.hidden = false;
@@ -518,6 +411,7 @@ function showLyricsPage() {
 }
 
 function showCategoryPage() {
+  installButton.hidden = true;
   homeHero.hidden = true;
   categoryTabs.hidden = true;
   pageHeader.hidden = false;
@@ -532,11 +426,6 @@ function showCategoryPage() {
 
   if (activeCategory === "memo") {
     renderMemoPage();
-    return;
-  }
-
-  if (activeCategory === "checklist") {
-    renderChecklistPage();
     return;
   }
 

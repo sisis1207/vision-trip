@@ -174,9 +174,9 @@ export const handbookItems = [
       { time: "08:00", title: "기상 및 아침 식사" },
       { time: "09:00", title: "마무리 예배 및 공항 출발" },
       { time: "10:30", title: "삿포로 치토세공항 도착 및 간단한 점심" },
-      { section: "1팀 6명", time: "12:55", title: "일본 출국" },
+      { section: "1팀 6명", time: "12:55", title: "일본 출국(1팀)" },
       { section: "1팀 6명", time: "16:00", title: "인천국제공항 도착" },
-      { section: "2팀 5명", time: "14:30", title: "일본 출국" },
+      { section: "2팀 5명", time: "14:30", title: "일본 출국(2팀)" },
       { section: "2팀 5명", time: "17:40", title: "인천국제공항 도착" },
     ],
     tags: ["일정"],
@@ -266,5 +266,4 @@ export const categoryLabels = {
   song: "찬양",
   word: "말씀",
   memo: "메모",
-  checklist: "준비물",
 };
