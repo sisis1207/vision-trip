@@ -41,6 +41,7 @@ export const handbookItems = [
     id: "day-1",
     category: "schedule",
     title: "DAY 1 — 2026.08.11 (화) 일본 선교 시작",
+    date: "2026-08-11",
     schedule: [
       {
         section: "아침 일정",
@@ -76,6 +77,7 @@ export const handbookItems = [
     id: "day-2",
     category: "schedule",
     title: "DAY 2 — 2026.08.12 (수) 노방전도(훗카이도국립대학)",
+    date: "2026-08-12",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
       { time: "09:30", title: "오전 예배 및 조 나누기" },
@@ -95,6 +97,7 @@ export const handbookItems = [
     id: "day-3",
     category: "schedule",
     title: "DAY 3 — 2026.08.13 (목) 문화교류",
+    date: "2026-08-13",
     schedule: [
       {
         section: "문화교류 일정",
@@ -144,6 +147,7 @@ export const handbookItems = [
     id: "day-4",
     category: "schedule",
     title: "DAY 4 — 2026.08.14 (금) 비전트립",
+    date: "2026-08-14",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
       { time: "08:30", title: "아침 예배" },
@@ -165,6 +169,7 @@ export const handbookItems = [
     id: "day-5",
     category: "schedule",
     title: "DAY 5 — 2026.08.15 (토) 귀국",
+    date: "2026-08-15",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
       { time: "09:00", title: "마무리 예배 및 공항 출발" },
@@ -271,13 +276,7 @@ export const categoryLabels = {
   schedule: "일정",
   song: "찬양",
   word: "말씀",
+  memo: "메모",
+  checklist: "준비물",
   update: "패치노트",
 };
-//알림
-export const homeNotices = [
-  {
-    title: "🔴공지",
-    body: `<span class="lyric-label">Ⅰ. 비전트립 회비 납부 : 7월 12일까지 김영창 부장<br />
-Ⅱ. 비전트립 출발 1~2주전 주일까지 여권 모두 모을겁니다! `,
-  },
-];

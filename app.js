@@ -1,10 +1,18 @@
-import { categoryLabels, handbookItems, homeNotices } from "./data.js";
+import { categoryLabels, handbookItems } from "./data.js";
 
 const validCategories = Object.keys(categoryLabels);
+const scheduleItems = handbookItems.filter(
+  (item) => item.category === "schedule",
+);
 const homeHero = document.querySelector("#homeHero");
-const homeNotice = document.querySelector("#homeNotice");
-const noticeList = document.querySelector("#noticeList");
+const todayScheduleCard = document.querySelector("#todayScheduleCard");
+const todayScheduleDate = document.querySelector("#todayScheduleDate");
+const todayScheduleList = document.querySelector("#todayScheduleList");
+const todayDayBadge = document.querySelector("#todayDayBadge");
+const todayToggle = document.querySelector("#todayToggle");
 const categoryTabs = document.querySelector("#categoryTabs");
+const homeActions = document.querySelector("#homeActions");
+const patchNotesButton = document.querySelector("#patchNotesButton");
 const pageHeader = document.querySelector("#pageHeader");
 const pageTitle = document.querySelector("#pageTitle");
 const backButton = document.querySelector("#backButton");
@@ -28,7 +36,21 @@ let activeCategory = null;
 let activeScheduleDay = "day-1";
 let activeLyricsSongId = null;
 let activeWordQuery = "";
+let todayExpanded = false;
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
+const memoStorageKey = "visionTripMemo";
+const checklistStorageKey = "visionTripChecklist";
+const koreaTimeZone = "Asia/Seoul";
+const defaultChecklistItems = [
+  "여권",
+  "엔화",
+  "보조배터리",
+  "충전기",
+  "성경책",
+  "개인 상비약",
+  "세면도구",
+];
+let checklistItems = loadChecklistItems();
 
 function getHashValue() {
   const hash = window.location.hash.replace("#", "");
@@ -76,14 +98,14 @@ function isLocalPreviewHost() {
 
 function showHome() {
   homeHero.hidden = false;
-  homeNotice.hidden = false;
   categoryTabs.hidden = false;
+  homeActions.hidden = false;
   pageHeader.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
-  renderNotices();
+  renderTodayScheduleCard();
 }
 
 function filterItems() {
@@ -155,24 +177,6 @@ function renderTags(tags = []) {
   return tags.map((tag) => `<span class="pill">${tag}</span>`).join("");
 }
 
-function renderNotices() {
-  if (!homeNotices.length) {
-    homeNotice.hidden = true;
-    return;
-  }
-
-  noticeList.innerHTML = homeNotices
-    .map(
-      (notice) => `
-        <article class="notice-item">
-          <strong>${notice.title}</strong>
-          <p>${notice.body}</p>
-        </article>
-      `,
-    )
-    .join("");
-}
-
 function renderEntryContent(item) {
   if (item.schedule) {
     return renderSchedule(item.schedule);
@@ -222,6 +226,251 @@ function renderList() {
   list.innerHTML = items.map(renderEntry).join("");
 }
 
+function getKoreaNowParts(date = new Date()) {
+  const testNow = getTestNowParts();
+  return testNow || getKoreaNowPartsFromDate(date);
+}
+
+function getTestNowParts() {
+  const params = new URLSearchParams(window.location.search);
+  const testDate = params.get("testDate");
+  const testTime = params.get("testTime");
+
+  if (!testDate && !testTime) return null;
+
+  const realNow = getKoreaNowPartsFromDate();
+  const dateKey = /^\d{4}-\d{2}-\d{2}$/.test(testDate || "")
+    ? testDate
+    : realNow.dateKey;
+  const minutes = /^([01]\d|2[0-3]):[0-5]\d$/.test(testTime || "")
+    ? parseScheduleMinutes(testTime)
+    : realNow.minutes;
+
+  return { dateKey, minutes };
+}
+
+function getKoreaNowPartsFromDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: koreaTimeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+  const value = (type) => parts.find((part) => part.type === type)?.value;
+
+  return {
+    dateKey: `${value("year")}-${value("month")}-${value("day")}`,
+    minutes: Number(value("hour")) * 60 + Number(value("minute")),
+  };
+}
+
+function parseScheduleMinutes(time = "") {
+  const match = time.match(/(\d{1,2}):(\d{2})/);
+  if (!match) return Number.POSITIVE_INFINITY;
+
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+
+function formatKoreaDateLabel(dateKey = "") {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  if (!year || !month || !day) return "";
+
+  const date = new Date(Date.UTC(year, month - 1, day));
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+
+  return `${month}월 ${day}일(${weekdays[date.getUTCDay()]})`;
+}
+
+function getTodayScheduleData() {
+  const koreaNow = getKoreaNowParts();
+  const day = scheduleItems.find((item) => item.date === koreaNow.dateKey);
+
+  if (!day) return null;
+
+  const events = day.schedule.map((event, index) => ({
+    ...event,
+    index,
+    minutes: parseScheduleMinutes(event.time),
+  }));
+  const eventsByDistance = [...events].sort(
+    (a, b) =>
+      Math.abs(a.minutes - koreaNow.minutes) -
+      Math.abs(b.minutes - koreaNow.minutes),
+  );
+  const nearest = eventsByDistance[0];
+
+  const visibleEvents = todayExpanded
+    ? events
+    : eventsByDistance.slice(0, 3).sort((a, b) => a.minutes - b.minutes);
+
+  return {
+    dateLabel: formatKoreaDateLabel(day.date),
+    dayLabel: day.id.replace("day-", "DAY "),
+    events,
+    nearestIndex: nearest?.index,
+    visibleEvents,
+  };
+}
+
+function renderTodayScheduleCard() {
+  const todaySchedule = getTodayScheduleData();
+
+  if (!todaySchedule) {
+    todayScheduleCard.hidden = true;
+    homeHero.classList.add("hero-no-today");
+    return;
+  }
+
+  homeHero.classList.remove("hero-no-today");
+  todayScheduleCard.hidden = false;
+  todayScheduleDate.textContent = todaySchedule.dateLabel;
+  todayDayBadge.textContent = todaySchedule.dayLabel;
+  todayToggle.hidden = todaySchedule.events.length <= 3;
+  todayToggle.textContent = todayExpanded ? "접기" : "더 보기";
+  todayToggle.classList.toggle("expanded", todayExpanded);
+  todayScheduleList.innerHTML = todaySchedule.visibleEvents
+    .map(
+      (event) => `
+        <div class="today-item ${event.index === todaySchedule.nearestIndex ? "nearest" : ""}">
+          <time>${event.time}</time>
+          <span>${event.title}</span>
+        </div>
+      `,
+    )
+    .join("");
+}
+
+function getStoredText(key) {
+  try {
+    return localStorage.getItem(key) || "";
+  } catch {
+    return "";
+  }
+}
+
+function setStoredText(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // localStorage can be unavailable in private or restricted browser modes.
+  }
+}
+
+function renderMemoPage() {
+  list.innerHTML = `
+    <article class="entry tool-entry">
+      <textarea class="memo-textarea" id="memoTextarea" placeholder="메모를 입력하세요."></textarea>
+    </article>
+  `;
+
+  const memoTextarea = document.querySelector("#memoTextarea");
+  memoTextarea.value = getStoredText(memoStorageKey);
+  memoTextarea.addEventListener("input", () => {
+    setStoredText(memoStorageKey, memoTextarea.value);
+  });
+}
+
+function createDefaultChecklistItems() {
+  return defaultChecklistItems.map((text, index) => ({
+    id: `default-${index}`,
+    text,
+    checked: false,
+  }));
+}
+
+function loadChecklistItems() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(checklistStorageKey));
+    if (Array.isArray(saved)) return saved;
+  } catch {
+    // Fall back to defaults when saved data is missing or invalid.
+  }
+
+  return createDefaultChecklistItems();
+}
+
+function saveChecklistItems() {
+  try {
+    localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+  } catch {
+    // localStorage can be unavailable in private or restricted browser modes.
+  }
+}
+
+function renderChecklistPage() {
+  list.replaceChildren();
+
+  const article = document.createElement("article");
+  article.className = "entry tool-entry";
+
+  const form = document.createElement("form");
+  form.className = "checklist-form";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "준비물 추가";
+  input.autocomplete = "off";
+
+  const addButton = document.createElement("button");
+  addButton.type = "submit";
+  addButton.textContent = "추가";
+
+  const items = document.createElement("div");
+  items.className = "checklist-items";
+
+  form.append(input, addButton);
+  article.append(form, items);
+  list.append(article);
+
+  checklistItems.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "checklist-item";
+
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = Boolean(item.checked);
+    checkbox.addEventListener("change", () => {
+      item.checked = checkbox.checked;
+      saveChecklistItems();
+    });
+
+    const text = document.createElement("span");
+    text.textContent = item.text;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "삭제";
+    deleteButton.addEventListener("click", () => {
+      checklistItems = checklistItems.filter((target) => target.id !== item.id);
+      saveChecklistItems();
+      renderChecklistPage();
+    });
+
+    label.append(checkbox, text);
+    row.append(label, deleteButton);
+    items.append(row);
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    checklistItems.push({
+      id: `custom-${Date.now()}`,
+      text,
+      checked: false,
+    });
+    input.value = "";
+    saveChecklistItems();
+    renderChecklistPage();
+  });
+}
+
 function showLyricsPage() {
   const song = getLyricsSong();
 
@@ -231,9 +480,10 @@ function showLyricsPage() {
   }
 
   homeHero.hidden = true;
-  homeNotice.hidden = true;
   categoryTabs.hidden = true;
+  homeActions.hidden = true;
   pageHeader.hidden = false;
+  todayScheduleCard.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = false;
@@ -251,9 +501,10 @@ function showLyricsPage() {
 
 function showCategoryPage() {
   homeHero.hidden = true;
-  homeNotice.hidden = true;
   categoryTabs.hidden = true;
+  homeActions.hidden = true;
   pageHeader.hidden = false;
+  todayScheduleCard.hidden = true;
   list.hidden = false;
   pageTitle.textContent = categoryLabels[activeCategory];
   tabs.forEach((tab) =>
@@ -261,6 +512,17 @@ function showCategoryPage() {
   );
   updateScheduleTabs();
   wordSearch.hidden = activeCategory !== "word";
+
+  if (activeCategory === "memo") {
+    renderMemoPage();
+    return;
+  }
+
+  if (activeCategory === "checklist") {
+    renderChecklistPage();
+    return;
+  }
+
   renderList();
 }
 
@@ -288,6 +550,10 @@ tabs.forEach((tab) => {
   });
 });
 
+patchNotesButton.addEventListener("click", () => {
+  openCategory("update");
+});
+
 backButton.addEventListener("click", () => {
   if (activeLyricsSongId) {
     openCategory("song");
@@ -312,6 +578,11 @@ scheduleDayButtons.forEach((button) => {
 wordSearchInput.addEventListener("input", () => {
   activeWordQuery = wordSearchInput.value.trim();
   renderList();
+});
+
+todayToggle.addEventListener("click", () => {
+  todayExpanded = !todayExpanded;
+  renderTodayScheduleCard();
 });
 
 window.addEventListener("hashchange", render);

@@ -41,16 +41,29 @@
           <div class="hero-copy">
             <p class="label">이촌동교회 삿포로 비전트립</p>
             <h2 id="heroTitle">비전트립 정보</h2>
-            <p>안내, 일정, 찬양, 말씀, 패치노트등 정보를 확인할 수 있습니다.</p>
+            <p>안내, 일정, 찬양, 말씀, 메모, 준비물을 한곳에서 확인할 수 있습니다.</p>
           </div>
-          <div class="hero-panel" aria-label="오늘의 핵심 안내">
-            <span>일정</span>
-            <strong>8월 11일(화) ~ 8월 15일(토), 4박 5일</strong>
+          <div
+            class="hero-panel today-card"
+            id="todayScheduleCard"
+            aria-label="오늘 일정"
+            hidden
+          >
+            <div class="today-card-header">
+              <div>
+                <div class="today-title-row">
+                  <span class="today-icon" aria-hidden="true"></span>
+                  <span>오늘 일정</span>
+                </div>
+                <p class="today-date" id="todayScheduleDate"></p>
+              </div>
+              <strong class="today-day-badge" id="todayDayBadge"></strong>
+            </div>
+            <div class="today-list" id="todayScheduleList"></div>
+            <button class="today-toggle" id="todayToggle" type="button">
+              더 보기
+            </button>
           </div>
-        </section>
-
-        <section class="notice-panel" id="homeNotice" aria-label="알림">
-          <div class="notice-list" id="noticeList"></div>
         </section>
 
         <nav class="tabs" id="categoryTabs" aria-label="카테고리">
@@ -62,10 +75,21 @@
           </button>
           <button class="tab" type="button" data-category="song">찬양</button>
           <button class="tab" type="button" data-category="word">말씀</button>
-          <button class="tab" type="button" data-category="update">
-            패치노트
+          <button class="tab" type="button" data-category="memo">메모</button>
+          <button class="tab" type="button" data-category="checklist">
+            준비물
           </button>
         </nav>
+
+        <div class="home-actions" id="homeActions">
+          <button class="patch-link" id="patchNotesButton" type="button">
+            <span class="patch-label">
+              <span class="patch-icon" aria-hidden="true"></span>
+              패치노트
+            </span>
+            <span class="patch-version">v1.0.0</span>
+          </button>
+        </div>
 
         <section class="page-header" id="pageHeader" hidden>
           <button class="back-button" id="backButton" type="button">←</button>
