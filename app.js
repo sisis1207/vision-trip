@@ -1,4 +1,4 @@
-import { categoryLabels, handbookItems } from "./data.js";
+import { categoryLabels, handbookItems } from "./data/index.js";
 
 const validCategories = Object.keys(categoryLabels);
 const scheduleItems = handbookItems.filter(
@@ -569,7 +569,9 @@ window.addEventListener("keydown", (event) => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
+    navigator.serviceWorker.register("./sw.js").catch((error) => {
+      console.warn("Service worker registration failed.", error);
+    });
   });
 }
 

@@ -1,4 +1,4 @@
-const cacheVersion = "v2026.06.24.4";
+const cacheVersion = "v1782315701932";
 const cacheName = `vision-trip-pwa-${cacheVersion}`;
 const assets = [
   "./",
@@ -6,7 +6,14 @@ const assets = [
   "./styles.css",
   "./app.js",
   "./data.js",
+  "./data/index.js",
+  "./data/info.js",
+  "./data/schedule.js",
+  "./data/songs.js",
+  "./data/words.js",
+  "./data/sermons.js",
   "./manifest.webmanifest",
+  "./og-image.png",
   "./assets/icon.svg",
   "./assets/paper-texture.svg",
   "./assets/songs/flowers.png",
@@ -36,11 +43,20 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== location.origin) return;
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const copy = response.clone();
-        caches.open(cacheName).then((cache) => cache.put(event.request, copy));
+        if (response.ok) {
+          const copy = response.clone();
+          caches
+            .open(cacheName)
+            .then((cache) => cache.put(event.request, copy))
+            .catch(() => {});
+        }
+
         return response;
       })
       .catch(() => {
