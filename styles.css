@@ -329,6 +329,7 @@ h1 {
 }
 
 .today-list {
+  --timeline-x: 82px;
   display: grid;
   gap: 0;
   position: relative;
@@ -339,7 +340,7 @@ h1 {
   position: absolute;
   top: 12px;
   bottom: 12px;
-  left: 82px;
+  left: calc(var(--timeline-x) - 1px);
   width: 2px;
   background: rgba(37, 82, 74, 0.13);
 }
@@ -361,7 +362,7 @@ h1 {
   content: "";
   position: absolute;
   top: 50%;
-  left: 78px;
+  left: calc(var(--timeline-x) - 4px);
   width: 8px;
   height: 8px;
   border-radius: 999px;
@@ -834,9 +835,5 @@ h1 {
 
   .schedule-card {
     grid-template-columns: 1fr;
-  }
-
-  .today-list::before {
-    left: 82px;
   }
 }
