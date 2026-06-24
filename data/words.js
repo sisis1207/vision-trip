@@ -20,4 +20,11 @@ export const wordItems = [
     body: "볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그와 더불어 먹고 그는 나와 더불어 먹으리라",
     tags: ["말씀", "요한계시록"],
   },
+  {
+    id: "message-4",
+    category: "word",
+    title: "test",
+    body: "test",
+    tags: ["말씀", "test"],
+  },
 ];
