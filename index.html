@@ -9,7 +9,7 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
 
     <!-- =========================================================
@@ -121,10 +121,12 @@
               <h2 class="hero-title" id="heroTitle">삿포로</h2>
 
               <div class="hero-tags">
+                <span>안내</span>
                 <span>일정</span>
                 <span>찬양</span>
                 <span>말씀</span>
                 <span>메모</span>
+                <span>마스코트</span>
               </div>
 
               <p class="hero-note">
@@ -168,7 +170,7 @@
 
         <!-- =========================================================
              9. 메인 카테고리 탭
-             - 안내 / 일정 / 찬양 / 말씀 / 메모
+             - 안내 / 일정 / 찬양 / 말씀 / 메모 / 마스코트
              - app.js에서 data-category 값으로 화면 전환
              ========================================================= -->
         <nav class="tabs" id="categoryTabs" aria-label="카테고리">
@@ -181,6 +183,9 @@
           <button class="tab" type="button" data-category="song">찬양</button>
           <button class="tab" type="button" data-category="word">말씀</button>
           <button class="tab" type="button" data-category="memo">메모</button>
+          <button class="tab" type="button" data-category="hanmom">
+            마스코트
+          </button>
         </nav>
 
         <!-- 하위 페이지 헤더: 카테고리 또는 가사 페이지 진입 시 표시 -->

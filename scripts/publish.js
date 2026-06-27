@@ -14,6 +14,7 @@ const checkFiles = [
   "data/schedule.js",
   "data/songs.js",
   "data/words.js",
+  "data/hanmom.js",
   "server.js",
   "sw.js",
   "scripts/publish.js",

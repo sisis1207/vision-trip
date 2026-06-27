@@ -211,7 +211,11 @@ function renderEntryContent(item) {
   }
 
   if (item.image) {
-    return `<button class="song-image-button" type="button" data-image="${item.image}" data-title="${item.title}"><img class="song-image" src="${item.image}" alt="${item.title} 악보" /></button>`;
+    const imageAlt =
+      item.imageAlt ||
+      (item.category === "song" ? `${item.title} 악보` : `${item.title} 이미지`);
+
+    return `<button class="song-image-button" type="button" data-image="${item.image}" data-title="${item.title}"><img class="song-image" src="${item.image}" alt="${imageAlt}" /></button>`;
   }
 
   return `<p>${item.body}</p>`;
@@ -635,7 +639,65 @@ window.addEventListener("keydown", (event) => {
 
 
 // =========================================================
-// 12. PWA 서비스워커 등록
+// 12. 모바일 브라우저 확대 및 당겨 새로고침 방지
+// =========================================================
+function preventBrowserDoubleTapZoom() {
+  let lastTouchEndAt = 0;
+  let lastTouchTarget = null;
+
+  document.addEventListener(
+    "touchend",
+    (event) => {
+      const currentTouchTarget =
+        event.target.closest?.(
+          "button, a, input, textarea, select, [role='button']",
+        ) || event.target;
+      const now = Date.now();
+      const isRepeatedTap =
+        currentTouchTarget === lastTouchTarget && now - lastTouchEndAt < 320;
+
+      if (isRepeatedTap) {
+        event.preventDefault();
+      }
+
+      lastTouchEndAt = now;
+      lastTouchTarget = currentTouchTarget;
+    },
+    { passive: false },
+  );
+}
+
+function preventPullToRefresh() {
+  let startY = 0;
+
+  document.addEventListener(
+    "touchstart",
+    (event) => {
+      startY = event.touches[0]?.clientY || 0;
+    },
+    { passive: true },
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      const currentY = event.touches[0]?.clientY || 0;
+      const isPullingDown = currentY > startY;
+
+      if (window.scrollY <= 0 && isPullingDown) {
+        event.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+}
+
+preventBrowserDoubleTapZoom();
+preventPullToRefresh();
+
+
+// =========================================================
+// 13. PWA 서비스워커 등록
 // =========================================================
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -647,7 +709,7 @@ if ("serviceWorker" in navigator) {
 
 
 // =========================================================
-// 13. 로컬 개발용 자동 새로고침
+// 14. 로컬 개발용 자동 새로고침
 // =========================================================
 if ("EventSource" in window && isLocalPreviewHost()) {
   const liveReload = new EventSource("./__events");
