@@ -67,7 +67,7 @@ export const songItems = [
 
 <span class="lyric-ko">주님께로 날 이끌어 주소서 주님을 더 원합니다</span>
 <span class="lyric-ja-original">みそばに引き寄せて主よ慕い求めます</span>
-<span class="lyric-ja">미소바니 히키요세테 슈요 시티이 모토메마스</span>
+<span class="lyric-ja">미소바니 히키요세테 슈요 시타이 모토메마스</span>
 `,
     tags: ["찬양"],
   },
