@@ -20,17 +20,20 @@
 
 html {
   min-height: 100%;
-  background: var(--bg);
+  background:
+    linear-gradient(135deg, rgba(37, 82, 74, 0.14), transparent 38%),
+    linear-gradient(315deg, rgba(194, 141, 46, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(194, 141, 46, 0.1)),
+    var(--bg);
+  background-attachment: fixed;
 }
 
 body {
-  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   color: var(--ink);
-  background:
-    linear-gradient(135deg, rgba(37, 82, 74, 0.14), transparent 38%),
-    linear-gradient(315deg, rgba(194, 141, 46, 0.18), transparent 34%),
-    var(--bg);
+  background: transparent;
   font-family:
     Inter, Pretendard, "Apple SD Gothic Neo", "Segoe UI", system-ui, sans-serif;
 }
@@ -817,6 +820,144 @@ h1 {
 
   .schedule-tabs {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .shell {
+    width: min(100%, 900px);
+    padding:
+      max(24px, env(safe-area-inset-top))
+      max(28px, env(safe-area-inset-right))
+      max(44px, env(safe-area-inset-bottom))
+      max(28px, env(safe-area-inset-left));
+    font-size: 1.02rem;
+  }
+
+  .topbar {
+    padding: 14px 0 24px;
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.48fr);
+    gap: 22px;
+    min-height: 340px;
+    padding: 34px;
+  }
+
+  .hero.hero-no-today {
+    min-height: 300px;
+  }
+
+  .hero h2 {
+    font-size: clamp(2.35rem, 5.2vw, 4.15rem);
+  }
+
+  .tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 22px 0 16px;
+  }
+
+  .tab {
+    min-height: 50px;
+    font-size: 0.98rem;
+  }
+
+  .schedule-tabs {
+    gap: 10px;
+  }
+
+  .schedule-tab {
+    min-height: 44px;
+    font-size: 0.94rem;
+  }
+
+  .page-header {
+    gap: 16px;
+    margin: 10px 0 22px;
+  }
+
+  .page-header h2 {
+    font-size: clamp(1.9rem, 4vw, 2.55rem);
+  }
+
+  .page-header,
+  .entry {
+    padding: 24px;
+  }
+
+  .content-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .entry h3 {
+    font-size: 1.18rem;
+  }
+
+  .entry p {
+    font-size: 1.02rem;
+    line-height: 1.62;
+  }
+
+  .schedule-card {
+    grid-template-columns: minmax(118px, 0.26fr) 1fr;
+    gap: 16px;
+    padding: 15px;
+  }
+
+  .memo-textarea {
+    min-height: 480px;
+    padding: 18px;
+    font-size: 1.02rem;
+  }
+
+  .song-image-button {
+    width: min(100%, 760px);
+    margin-inline: auto;
+  }
+
+  .image-viewer {
+    padding:
+      max(24px, env(safe-area-inset-top))
+      max(24px, env(safe-area-inset-right))
+      max(24px, env(safe-area-inset-bottom))
+      max(24px, env(safe-area-inset-left));
+  }
+
+  .image-viewer img {
+    max-width: min(100%, 900px);
+  }
+
+  .install-sheet {
+    place-items: center;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) and (orientation: landscape) {
+  .hero {
+    min-height: 300px;
+  }
+
+  .content-list {
+    grid-template-columns: 1fr;
+  }
+
+  .entry:has(.schedule-list),
+  .entry:has(.song-image-button),
+  .entry:has(.lyrics-text),
+  .entry:has(.memo-textarea) {
+    grid-column: 1 / -1;
+  }
+
+  .song-image {
+    max-height: 74vh;
+    object-fit: contain;
   }
 }
 

@@ -490,11 +490,18 @@ todayToggle.addEventListener("click", () => {
 window.addEventListener("hashchange", render);
 
 function showBookmarkGuide() {
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isIPad =
+    /ipad/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isIPhone = /iphone|ipod/i.test(navigator.userAgent);
+  const isIOS = isIPad || isIPhone;
   const isAndroid = /android/i.test(navigator.userAgent);
 
   if (isLocalPreviewHost()) {
     installMessage.textContent = `지금 주소는 개발용 미리보기라 PC가 꺼지면 열리지 않습니다. 휴대폰이나 다른 PC에서는 GitHub Pages 주소를 북마크하세요: ${publicAppUrl}`;
+  } else if (isIPad) {
+    installMessage.textContent =
+      'iPad는 Safari 상단 공유 버튼을 누른 뒤 "책갈피 추가" 또는 "홈 화면에 추가"를 선택하세요. 추가한 뒤에는 iPad 홈 화면에서 앱처럼 열 수 있습니다.';
   } else if (isIOS) {
     installMessage.textContent =
       'iPhone은 Safari 공유 버튼을 누른 뒤 "책갈피 추가" 또는 "홈 화면에 추가"를 선택하세요.';
