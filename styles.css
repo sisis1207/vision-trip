@@ -842,7 +842,7 @@ h1 {
   }
 
   .hero {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.48fr);
+    grid-template-columns: 1fr;
     gap: 22px;
     min-height: 340px;
     padding: 34px;
