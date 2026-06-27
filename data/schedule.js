@@ -88,7 +88,7 @@ export const scheduleItems = [
         section: "문화교류 일정",
         time: "16:30",
         title: "문화교류 시작",
-        note: "- K-pop 댄스(같이 춤 배우고 릴스 찍기)\n- 노래\n- 레크리에이션",
+        note: "- K-pop 댄스(같이 춤 추고 배우며 릴스 찍기)\n- 노래\n- 레크레이션",
       },
       {
         section: "문화교류 일정",

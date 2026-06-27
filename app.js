@@ -115,11 +115,16 @@ function filterItems() {
 }
 
 function getSearchText(item) {
-  return [item.title, item.body, ...(item.tags || [])].join(" ").toLowerCase();
+  return [item.title, item.body, ...(item.tags || [])]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 function getLyricsSong() {
-  return handbookItems.find((item) => item.id === activeLyricsSongId);
+  return handbookItems.find(
+    (item) => item.category === "song" && item.id === activeLyricsSongId,
+  );
 }
 
 function updateScheduleTabs() {
@@ -356,6 +361,8 @@ function renderMemoPage() {
   `;
 
   const memoTextarea = document.querySelector("#memoTextarea");
+  if (!memoTextarea) return;
+
   memoTextarea.value = getStoredText(memoStorageKey);
   memoTextarea.addEventListener("input", () => {
     setStoredText(memoStorageKey, memoTextarea.value);
@@ -530,7 +537,7 @@ installSheet.addEventListener("click", (event) => {
 
 function openImageViewer(src, title) {
   viewerImage.src = src;
-  viewerImage.alt = `${title} 악보 크게 보기`;
+  viewerImage.alt = `${title} 크게 보기`;
   imageViewer.hidden = false;
 }
 

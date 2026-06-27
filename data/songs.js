@@ -53,4 +53,13 @@ export const songItems = [
 `,
     tags: ["찬양"],
   },
+  {
+    id: "song-3",
+    category: "song",
+    title: "test",
+    body: "",
+    image: "",
+    lyrics: "",
+    tags: ["찬양"],
+  },
 ];

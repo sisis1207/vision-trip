@@ -41,6 +41,19 @@ button,
 input {
   font: inherit;
 }
+/* 버튼 전환 효과 */
+.icon-button,
+.back-button,
+.tab,
+.schedule-tab,
+.today-toggle,
+.sheet-close {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
 
 .sr-only {
   position: absolute;
@@ -156,22 +169,47 @@ h1 {
   gap: 18px;
   align-items: stretch;
   min-height: 280px;
-  padding: 28px;
-  border: 1px solid rgba(37, 82, 74, 0.2);
-  border-radius: 8px;
+  padding: 32px;
+  border: 1px solid rgba(37, 82, 74, 0.12);
+  border-radius: 16px;
   background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.9),
-      rgba(255, 255, 255, 0.64)
-    ),
+    135deg, rgba(255, 255, 255, 0.96), rgba(246, 244, 239, 0.9),
     url("./assets/paper-texture.svg");
-  background-size: cover;
-  box-shadow: var(--shadow);
+  background-size: cover, cover;
+  box-shadow: 0 8px 24px rgba(20, 40, 35, 0.4);
 }
 
 .hero-copy {
   align-self: end;
+}
+
+.hero-note {
+  max-width: 520px;
+  margin: 0;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 20px;
+}
+
+.hero-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: var(--accent-strong);
+
+  font-size: 0.86rem;
+  font-weight: 700;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .hero-no-today {
@@ -187,15 +225,15 @@ h1 {
   max-width: 620px;
   margin-bottom: 14px;
   font-size: clamp(2rem, 7vw, 4rem);
-  line-height: 1.03;
+  line-height: 1.08;
   letter-spacing: 0;
 }
 
 .hero p {
   max-width: 600px;
   color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.05rem;
+  line-height: 1.8;
 }
 
 .hero-panel {
@@ -204,7 +242,7 @@ h1 {
   gap: 8px;
   padding: 18px;
   border-left: 4px solid var(--gold);
-  border-radius: 8px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.86);
 }
 
@@ -224,6 +262,7 @@ h1 {
   padding: 20px;
   border-left: 0;
   background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(21, 59, 54, 0.08);
 }
 
 .today-card-header {
@@ -279,7 +318,7 @@ h1 {
 .today-date {
   margin: 7px 0 0 26px;
   color: var(--accent-strong);
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   font-weight: 800;
   line-height: 1.35;
 }
@@ -352,9 +391,9 @@ h1 {
   grid-template-columns: 64px 1fr;
   gap: 26px;
   align-items: center;
-  min-height: 34px;
+  min-height: 40px;
   position: relative;
-  padding: 4px 8px;
+  padding: 8px 10px;
   border-radius: 8px;
   color: var(--ink);
   background: transparent;
@@ -429,14 +468,41 @@ h1 {
 }
 
 .back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 42px;
   height: 42px;
+
+  padding: 0;
+
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 12px;
+
   color: var(--accent-strong);
   background: #fff;
-  font-size: 1.25rem;
-  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.back-button:active {
+  transform: scale(0.96);
+}
+
+.back-icon {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+
+  stroke: currentColor;
+  stroke-width: 2.5;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  pointer-events: none;
 }
 
 .schedule-tabs {
@@ -501,7 +567,7 @@ h1 {
   display: grid;
   padding: 18px;
   border: 1px solid rgba(37, 82, 74, 0.16);
-  border-radius: 8px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.9);
 }
 
@@ -604,8 +670,11 @@ h1 {
   border: 1px solid rgba(37, 82, 74, 0.18);
   border-radius: 8px;
   color: var(--accent-strong);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(37, 82, 74, 0.08));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.88),
+    rgba(37, 82, 74, 0.08)
+  );
   box-shadow: 0 8px 18px rgba(23, 33, 31, 0.08);
   transition:
     border-color 0.18s ease,
@@ -614,15 +683,44 @@ h1 {
     transform 0.18s ease;
 }
 
-.lyrics-size-button:hover {
-  border-color: rgba(37, 82, 74, 0.38);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .lyrics-size-button:hover {
+    border-color: rgba(37, 82, 74, 0.38);
+    transform: translateY(-1px);
+  }
+
+  .back-button:hover {
+    background: #f7f7f7;
+    border-color: rgba(37, 82, 74, 0.3);
+  }
+
+  .tab:hover,
+  .schedule-tab:hover {
+    background: rgba(37, 82, 74, 0.08);
+    border-color: rgba(37, 82, 74, 0.3);
+  }
+
+  .icon-button:hover {
+    background: var(--accent-strong);
+  }
+
+  .today-toggle:hover {
+    color: var(--accent);
+  }
+
+  .sheet-close:hover {
+    background: rgba(37, 82, 74, 0.08);
+    border-color: rgba(37, 82, 74, 0.3);
+  }
 }
 
 .lyrics-size-button.active {
   color: #fff;
-  background:
-    linear-gradient(180deg, rgba(37, 82, 74, 0.96), var(--accent-strong));
+  background: linear-gradient(
+    180deg,
+    rgba(37, 82, 74, 0.96),
+    var(--accent-strong)
+  );
   box-shadow: 0 10px 22px rgba(21, 59, 54, 0.2);
 }
 
@@ -714,9 +812,9 @@ h1 {
   grid-template-columns: minmax(92px, 0.28fr) 1fr;
   gap: 12px;
   align-items: start;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid rgba(37, 82, 74, 0.14);
-  border-radius: 8px;
+  border-radius: 12px;
   background: rgba(246, 244, 239, 0.7);
 }
 
@@ -752,7 +850,7 @@ h1 {
 
 .image-viewer img {
   max-width: 100%;
-  max-height: 92vh;
+  max-height: 88vh;
   border-radius: 8px;
   background: #fff;
   object-fit: contain;
@@ -825,8 +923,7 @@ h1 {
 @media (min-width: 768px) and (max-width: 1199px) {
   .shell {
     width: min(100%, 900px);
-    padding:
-      max(24px, env(safe-area-inset-top))
+    padding: max(24px, env(safe-area-inset-top))
       max(28px, env(safe-area-inset-right))
       max(44px, env(safe-area-inset-bottom))
       max(28px, env(safe-area-inset-left));
@@ -887,7 +984,7 @@ h1 {
 
   .page-header,
   .entry {
-    padding: 24px;
+    border-radius: 12px;
   }
 
   .content-list {
@@ -922,8 +1019,7 @@ h1 {
   }
 
   .image-viewer {
-    padding:
-      max(24px, env(safe-area-inset-top))
+    padding: max(24px, env(safe-area-inset-top))
       max(24px, env(safe-area-inset-right))
       max(24px, env(safe-area-inset-bottom))
       max(24px, env(safe-area-inset-left));
@@ -965,4 +1061,12 @@ h1 {
   .schedule-card {
     grid-template-columns: 1fr;
   }
+}
+
+/* 키보드 접근성(PC, iPad 키보드) */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(37, 82, 74, 0.25);
+  outline-offset: 2px;
 }

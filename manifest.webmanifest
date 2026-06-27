@@ -1,7 +1,7 @@
 {
   "name": "비전트립",
   "short_name": "비전트립",
-  "description": "잠깐 쓰고 빠르게 공유하는 모바일 비전트립 PWA",
+  "description": "안내, 일정, 찬양, 말씀, 메모를 한 곳에서 확인하는 비전트립 핸드북입니다.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
