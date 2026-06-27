@@ -494,7 +494,6 @@ function showBookmarkGuide() {
     /ipad/i.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isIPhone = /iphone|ipod/i.test(navigator.userAgent);
-  const isIOS = isIPad || isIPhone;
   const isAndroid = /android/i.test(navigator.userAgent);
 
   if (isLocalPreviewHost()) {
@@ -502,7 +501,7 @@ function showBookmarkGuide() {
   } else if (isIPad) {
     installMessage.textContent =
       'iPad는 Safari 상단 공유 버튼을 누른 뒤 "책갈피 추가" 또는 "홈 화면에 추가"를 선택하세요. 추가한 뒤에는 iPad 홈 화면에서 앱처럼 열 수 있습니다.';
-  } else if (isIOS) {
+  } else if (isIPhone) {
     installMessage.textContent =
       'iPhone은 Safari 공유 버튼을 누른 뒤 "책갈피 추가" 또는 "홈 화면에 추가"를 선택하세요.';
   } else if (isAndroid) {

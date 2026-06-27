@@ -10,7 +10,6 @@ const checkFiles = [
   "data/schedule.js",
   "data/songs.js",
   "data/words.js",
-  "data/sermons.js",
   "server.js",
   "sw.js",
   "scripts/publish.js",

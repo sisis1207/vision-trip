@@ -25,7 +25,6 @@ html {
     linear-gradient(315deg, rgba(194, 141, 46, 0.2), transparent 42%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(194, 141, 46, 0.1)),
     var(--bg);
-  background-attachment: fixed;
 }
 
 body {
@@ -942,17 +941,6 @@ h1 {
 @media (min-width: 900px) and (max-width: 1199px) and (orientation: landscape) {
   .hero {
     min-height: 300px;
-  }
-
-  .content-list {
-    grid-template-columns: 1fr;
-  }
-
-  .entry:has(.schedule-list),
-  .entry:has(.song-image-button),
-  .entry:has(.lyrics-text),
-  .entry:has(.memo-textarea) {
-    grid-column: 1 / -1;
   }
 
   .song-image {
