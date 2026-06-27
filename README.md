@@ -17,6 +17,19 @@ PC에서 확인:
 http://localhost:5173
 ```
 
+
+## 파일 구조
+
+```text
+index.html              # 앱 화면 구조와 PWA/공유 메타태그
+styles.css              # 전체 디자인, 반응형, 접근성 스타일
+app.js                  # 화면 전환, 데이터 렌더링, 메모, 이미지 확대, PWA 등록
+data/                   # 안내, 일정, 찬양, 말씀 데이터
+sw.js                   # 오프라인 캐시와 서비스워커
+manifest.webmanifest    # PWA 설치 정보
+scripts/publish.js      # 문법 검사, 캐시 버전 갱신, 커밋, 푸시 자동화
+```
+
 ## 내용 수정 위치
 
 - 안내: `data/info.js`
@@ -24,9 +37,6 @@ http://localhost:5173
 - 찬양: `data/songs.js`
 - 말씀: `data/words.js`
 - 전체 데이터 연결: `data/index.js`
-
-루트의 `data.js`는 예전 경로 호환용입니다.
-새 데이터를 추가할 때는 `data/` 폴더 안의 파일을 수정하세요.
 
 루트의 `data.js`는 예전 경로 호환용 파일입니다.
 새 데이터를 추가할 때는 `data.js`를 직접 수정하지 말고 `data/` 폴더 안의 파일을 수정하세요.

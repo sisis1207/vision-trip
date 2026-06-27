@@ -1,3 +1,6 @@
+// 말씀 화면에서 사용하는 말씀 데이터입니다.
+// 검색은 title, body, tags를 기준으로 동작합니다.
+
 export const wordItems = [
   {
     id: "message-1",

@@ -1,3 +1,6 @@
+// 로컬 개발 서버입니다.
+// 정적 파일을 제공하고, VS Code 미리보기용 live reload 이벤트를 지원합니다.
+
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -7,6 +10,7 @@ const port = Number(process.env.PORT || 5173);
 const root = __dirname;
 const liveReloadClients = new Set();
 
+// 확장자별 Content-Type 매핑입니다.
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -17,6 +21,7 @@ const types = {
   ".svg": "image/svg+xml; charset=utf-8",
 };
 
+// HTTP 응답을 공통 형식으로 보냅니다.
 function send(res, status, body, type = "text/plain; charset=utf-8") {
   res.writeHead(status, {
     "Content-Type": type,
@@ -25,6 +30,7 @@ function send(res, status, body, type = "text/plain; charset=utf-8") {
   res.end(body);
 }
 
+// 요청 처리: live reload 이벤트 또는 정적 파일 응답을 처리합니다.
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 

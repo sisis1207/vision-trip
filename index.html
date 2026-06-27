@@ -1,14 +1,22 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <!-- 기본 문서 설정 -->
+    <!-- =========================================================
+         1. 기본 문서 설정
+         - 문자 인코딩
+         - 모바일 viewport
+         ========================================================= -->
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
 
-    <!-- PWA / 모바일 앱 표시 설정 -->
+    <!-- =========================================================
+         2. PWA / 모바일 앱 표시 설정
+         - iOS 홈 화면 추가
+         - 브라우저 테마 컬러
+         ========================================================= -->
     <meta name="theme-color" content="#25524a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="비전트립" />
@@ -17,18 +25,24 @@
       content="black-translucent"
     />
 
-    <!-- 기본 검색/공유 설명 -->
+    <!-- =========================================================
+         3. 기본 SEO 설명
+         - 검색 결과 및 기본 링크 설명
+         ========================================================= -->
     <meta
       name="description"
-      content="안내, 일정, 찬양, 말씀, 메모를 한 곳에서 확인하는 비전트립 핸드북입니다."
+      content="비전트립 정보를 한 곳에서 확인하는 비전트립 핸드북입니다."
     />
 
-    <!-- Open Graph: 카카오톡/문자/디스코드 등 링크 미리보기 -->
+    <!-- =========================================================
+         4. Open Graph 공유 미리보기
+         - 카카오톡 / 문자 / 디스코드 / 인스타 DM 등
+         ========================================================= -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="비전트립 | 이촌동교회 삿포로 비전트립" />
     <meta
       property="og:description"
-      content="안내, 일정, 찬양, 말씀, 메모를 한 곳에서 확인하는 비전트립 핸드북입니다."
+      content="비전트립 정보를 한 곳에서 확인하는 비전트립 핸드북입니다."
     />
     <meta
       property="og:url"
@@ -41,7 +55,9 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <!-- Twitter/X 링크 미리보기 -->
+    <!-- =========================================================
+         5. Twitter/X 공유 미리보기
+         ========================================================= -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
@@ -49,14 +65,19 @@
     />
     <meta
       name="twitter:description"
-      content="안내, 일정, 찬양, 말씀, 메모를 한 곳에서 확인하는 비전트립 핸드북입니다."
+      content="비전트립 정보를 한 곳에서 확인하는 비전트립 핸드북입니다."
     />
     <meta
       name="twitter:image"
       content="https://sisis1207.github.io/vision-trip/og-image.png"
     />
 
-    <!-- 문서 제목 및 정적 리소스 연결 -->
+    <!-- =========================================================
+         6. 문서 제목 및 정적 리소스
+         - manifest
+         - favicon
+         - CSS
+         ========================================================= -->
     <title>비전트립 | 이촌동교회 삿포로 비전트립</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
@@ -65,9 +86,11 @@
   </head>
 
   <body>
-    <!-- 전체 앱 레이아웃 컨테이너 -->
+    <!-- =========================================================
+         7. 전체 앱 레이아웃 컨테이너
+         ========================================================= -->
     <div class="shell">
-      <!-- 상단 헤더: 앱 제목과 설치/북마크 버튼 -->
+      <!-- 상단 헤더: 앱 제목과 북마크/설치 안내 버튼 -->
       <header class="topbar">
         <div>
           <p class="eyebrow">Vision Trip</p>
@@ -78,32 +101,43 @@
           id="installButton"
           type="button"
           title="북마크로 저장"
+          aria-label="북마크로 저장"
         >
           <span aria-hidden="true">+</span>
         </button>
       </header>
 
       <main>
-        <!-- 홈 히어로 영역: 앱 소개 및 오늘 일정 카드 -->
+        <!-- =========================================================
+             8. 홈 Hero 영역
+             - 앱 소개
+             - 주요 기능 태그
+             - 오늘 일정 카드
+             ========================================================= -->
         <section class="hero" id="homeHero" aria-labelledby="heroTitle">
-          <div class="hero-copy">
-            <p class="label">이촌동교회 삿포로 비전트립</p>
+          <div class="hero-inner">
+            <div class="hero-copy">
+              <p class="label">비전트립 핸드북</p>
+              <h2 class="hero-title" id="heroTitle">삿포로</h2>
 
-            <h2 id="heroTitle">비전트립 핸드북</h2>
+              <div class="hero-tags">
+                <span>일정</span>
+                <span>찬양</span>
+                <span>말씀</span>
+                <span>메모</span>
+              </div>
 
-            <div class="hero-tags">
-              <span>일정</span>
-              <span>찬양</span>
-              <span>말씀</span>
-              <span>메모</span>
+              <p class="hero-note">
+                비전트립에 필요한 정보를 한 곳에서 확인하세요.
+              </p>
             </div>
 
-            <p class="hero-note">
-              비전트립에 필요한 정보를 한 곳에서 확인하세요.
-            </p>
+            <div class="hero-illust" aria-hidden="true">
+              <img src="./assets/hanmom.png" alt="" />
+            </div>
           </div>
 
-          <!-- 오늘 일정 카드: app.js에서 일정이 있을 때 표시 -->
+          <!-- 오늘 일정 카드: app.js에서 오늘 날짜와 일치하는 일정이 있을 때 표시 -->
           <div
             class="hero-panel today-card"
             id="todayScheduleCard"
@@ -113,7 +147,12 @@
             <div class="today-card-header">
               <div>
                 <div class="today-title-row">
-                  <span class="today-icon" aria-hidden="true"></span>
+                  <img
+                    src="./assets/hanmom.png"
+                    alt=""
+                    class="today-character"
+                    aria-hidden="true"
+                  />
                   <span>오늘 일정</span>
                 </div>
                 <p class="today-date" id="todayScheduleDate"></p>
@@ -127,7 +166,11 @@
           </div>
         </section>
 
-        <!-- 메인 카테고리 탭 -->
+        <!-- =========================================================
+             9. 메인 카테고리 탭
+             - 안내 / 일정 / 찬양 / 말씀 / 메모
+             - app.js에서 data-category 값으로 화면 전환
+             ========================================================= -->
         <nav class="tabs" id="categoryTabs" aria-label="카테고리">
           <button class="tab active" type="button" data-category="info">
             안내
@@ -140,7 +183,7 @@
           <button class="tab" type="button" data-category="memo">메모</button>
         </nav>
 
-        <!-- 하위 페이지 헤더: 카테고리 진입 시 표시 -->
+        <!-- 하위 페이지 헤더: 카테고리 또는 가사 페이지 진입 시 표시 -->
         <section class="page-header" id="pageHeader" hidden>
           <button
             class="back-button"
@@ -158,7 +201,7 @@
           </div>
         </section>
 
-        <!-- 말씀 검색 영역: 말씀 카테고리에서만 표시 -->
+        <!-- 말씀 검색 영역: 말씀 카테고리에서만 app.js가 표시 -->
         <section class="word-search" id="wordSearch" hidden>
           <label class="sr-only" for="wordSearchInput">말씀 검색</label>
           <input
@@ -169,7 +212,7 @@
           />
         </section>
 
-        <!-- 일정 일차 선택 탭: 일정 카테고리에서만 표시 -->
+        <!-- 일정 일차 선택 탭: 일정 카테고리에서만 app.js가 표시 -->
         <nav
           class="schedule-tabs"
           id="scheduleTabs"
@@ -193,7 +236,7 @@
           </button>
         </nav>
 
-        <!-- 콘텐츠 목록 출력 영역: 안내/일정/찬양/말씀 데이터 렌더링 -->
+        <!-- 콘텐츠 목록 출력 영역: 안내 / 일정 / 찬양 / 말씀 / 메모 렌더링 -->
         <section
           class="content-list"
           id="contentList"
@@ -201,7 +244,7 @@
           hidden
         ></section>
 
-        <!-- 설치 안내 시트: 설치 버튼 클릭 시 표시 -->
+        <!-- 설치 안내 시트: 북마크/홈 화면 추가 안내 -->
         <section class="install-sheet" id="installSheet" hidden>
           <div
             class="install-card"
@@ -224,7 +267,7 @@
           </div>
         </section>
 
-        <!-- 이미지 확대 보기: 이미지 클릭 시 app.js에서 표시 -->
+        <!-- 이미지 확대 보기: 찬양 이미지 클릭 시 app.js에서 표시 -->
         <section class="image-viewer" id="imageViewer" hidden>
           <button
             class="image-close"
@@ -239,7 +282,7 @@
       </main>
     </div>
 
-    <!-- 앱 동작 스크립트 -->
+    <!-- 앱 동작 스크립트: 화면 전환, 데이터 렌더링, 메모, 이미지 확대, PWA 등록 -->
     <script src="./app.js" type="module"></script>
   </body>
 </html>

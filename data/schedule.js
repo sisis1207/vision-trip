@@ -1,3 +1,6 @@
+// 일정 화면과 오늘 일정 카드에서 사용하는 일정 데이터입니다.
+// id는 day-1 형식을 유지하고, date는 YYYY-MM-DD 형식으로 입력하세요.
+
 export const scheduleItems = [
   {
     // 1일차

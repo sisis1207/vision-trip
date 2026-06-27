@@ -1,5 +1,11 @@
+// 비전트립 앱의 메인 스크립트입니다.
+// 화면 전환, 데이터 렌더링, 메모 저장, 이미지 확대, PWA 등록을 담당합니다.
+
 import { categoryLabels, handbookItems } from "./data/index.js";
 
+// =========================================================
+// 1. 데이터 및 DOM 참조
+// =========================================================
 const validCategories = Object.keys(categoryLabels);
 const scheduleItems = handbookItems.filter(
   (item) => item.category === "schedule",
@@ -40,6 +46,10 @@ const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
 const koreaTimeZone = "Asia/Seoul";
 
+
+// =========================================================
+// 2. URL 해시와 화면 이동
+// =========================================================
 function getHashValue() {
   const hash = window.location.hash.replace("#", "");
 
@@ -85,6 +95,10 @@ function isLocalPreviewHost() {
   );
 }
 
+
+// =========================================================
+// 3. 홈 / 카테고리 화면 렌더링
+// =========================================================
 function showHome() {
   installButton.hidden = false;
   homeHero.hidden = false;
@@ -93,7 +107,11 @@ function showHome() {
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
-  tabs.forEach((tab) => tab.classList.remove("active"));
+  
+// =========================================================
+// 9. 이벤트 바인딩
+// =========================================================
+tabs.forEach((tab) => tab.classList.remove("active"));
   renderTodayScheduleCard();
 }
 
@@ -134,6 +152,10 @@ function updateScheduleTabs() {
   });
 }
 
+
+// =========================================================
+// 4. 콘텐츠 카드 렌더링
+// =========================================================
 function renderSchedule(schedule = []) {
   let currentSection = "";
 
@@ -220,6 +242,10 @@ function renderList() {
   list.innerHTML = items.map(renderEntry).join("");
 }
 
+
+// =========================================================
+// 5. 오늘 일정 계산
+// =========================================================
 function getKoreaNowParts(date = new Date()) {
   const testNow = getTestNowParts();
   return testNow || getKoreaNowPartsFromDate(date);
@@ -337,6 +363,10 @@ function renderTodayScheduleCard() {
     .join("");
 }
 
+
+// =========================================================
+// 6. 메모 저장소
+// =========================================================
 function getStoredText(key) {
   try {
     return localStorage.getItem(key) || "";
@@ -369,6 +399,10 @@ function renderMemoPage() {
   });
 }
 
+
+// =========================================================
+// 7. 가사 페이지
+// =========================================================
 function showLyricsPage() {
   const song = getLyricsSong();
 
@@ -439,6 +473,10 @@ function showCategoryPage() {
   renderList();
 }
 
+
+// =========================================================
+// 8. 전체 화면 상태 렌더링
+// =========================================================
 function render() {
   activeLyricsSongId = getLyricsSongIdFromHash();
   if (activeLyricsSongId) {
@@ -496,6 +534,10 @@ todayToggle.addEventListener("click", () => {
 
 window.addEventListener("hashchange", render);
 
+
+// =========================================================
+// 10. 북마크 / 홈 화면 추가 안내
+// =========================================================
 function showBookmarkGuide() {
   const isIPad =
     /ipad/i.test(navigator.userAgent) ||
@@ -535,6 +577,10 @@ installSheet.addEventListener("click", (event) => {
   }
 });
 
+
+// =========================================================
+// 11. 이미지 확대 보기
+// =========================================================
 function openImageViewer(src, title) {
   viewerImage.src = src;
   viewerImage.alt = `${title} 크게 보기`;
@@ -580,6 +626,10 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+
+// =========================================================
+// 12. PWA 서비스워커 등록
+// =========================================================
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch((error) => {
@@ -588,6 +638,10 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+
+// =========================================================
+// 13. 로컬 개발용 자동 새로고침
+// =========================================================
 if ("EventSource" in window && isLocalPreviewHost()) {
   const liveReload = new EventSource("./__events");
   liveReload.addEventListener("reload", () => {

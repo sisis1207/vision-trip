@@ -1,3 +1,6 @@
+// 안내 화면에 표시할 기본 정보 데이터입니다.
+// 항목을 추가할 때는 id, category, title, body, tags 구조를 유지하세요.
+
 export const infoItems = [
   {
     id: "info-1",

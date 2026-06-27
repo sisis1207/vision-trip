@@ -1,3 +1,6 @@
+// 찬양 화면에서 사용하는 악보 이미지와 가사 데이터입니다.
+// image 경로와 lyrics HTML 구조를 변경할 때는 오프라인 캐시(sw.js)도 함께 확인하세요.
+
 export const songItems = [
   {
     id: "song-1",
