@@ -9,6 +9,6 @@ export const hanmomItems = [
     body: "",
     image: "./assets/hanmom.png",
     imageAlt: "한몸이 이미지",
-    tags: ["한몸이"],
+    tags: ["마스코트", "한몸이"],
   },
 ];

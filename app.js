@@ -52,6 +52,14 @@ let activeLyricsSongId = null;
 let activeWordQuery = "";
 let todayExpanded = false;
 let lyricsLarge = false;
+let activeLyricsMode = "all";
+const lyricsModeOptions = [
+  { value: "all", label: "전체" },
+  { value: "ko", label: "한국어" },
+  { value: "ja-original", label: "일본어" },
+  { value: "pronunciation", label: "발음" },
+];
+const lyricsModeValues = new Set(lyricsModeOptions.map(({ value }) => value));
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
 const koreaTimeZone = "Asia/Seoul";
@@ -100,6 +108,7 @@ function openCategory(category) {
 
 function openLyrics(songId) {
   lyricsLarge = false;
+  activeLyricsMode = "all";
   window.location.hash = `lyrics/${songId}`;
 }
 
@@ -225,6 +234,23 @@ function renderLyricsButton(item) {
   if (!item.lyrics) return "";
 
   return `<button class="lyrics-button" type="button" data-lyrics-id="${item.id}" title="${item.title} 가사만 보기" aria-label="${item.title} 가사만 보기">♪</button>`;
+}
+
+function renderLyricsModeButtons() {
+  return lyricsModeOptions
+    .map(
+      ({ value, label }) => `
+        <button
+          class="lyrics-mode-button ${activeLyricsMode === value ? "active" : ""}"
+          type="button"
+          data-lyrics-mode="${value}"
+          aria-pressed="${activeLyricsMode === value}"
+        >
+          ${label}
+        </button>
+      `,
+    )
+    .join("");
 }
 
 function renderEntry(item) {
@@ -430,7 +456,7 @@ function showLyricsPage() {
   pageTitle.textContent = `${song.title} 가사`;
   tabs.forEach((tab) => tab.classList.remove("active"));
   list.innerHTML = `
-    <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}">
+    <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}" data-lyrics-view="${activeLyricsMode}">
       <div>
         <div class="lyrics-header">
           <h3>${song.title}</h3>
@@ -452,6 +478,9 @@ function showLyricsPage() {
               ${lyricsLarge ? "" : '<path d="M10.5 8v5"></path>'}
             </svg>
           </button>
+        </div>
+        <div class="lyrics-mode-tabs" aria-label="가사 표시 방식">
+          ${renderLyricsModeButtons()}
         </div>
         <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>
       </div>
@@ -608,6 +637,16 @@ list.addEventListener("click", (event) => {
   if (event.target.closest("[data-lyrics-size-toggle]")) {
     lyricsLarge = !lyricsLarge;
     showLyricsPage();
+    return;
+  }
+
+  const lyricsModeButton = event.target.closest("[data-lyrics-mode]");
+  if (lyricsModeButton) {
+    const nextLyricsMode = lyricsModeButton.dataset.lyricsMode;
+    if (lyricsModeValues.has(nextLyricsMode)) {
+      activeLyricsMode = nextLyricsMode;
+      showLyricsPage();
+    }
     return;
   }
 
