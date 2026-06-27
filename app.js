@@ -10,6 +10,16 @@ const validCategories = Object.keys(categoryLabels);
 const scheduleItems = handbookItems.filter(
   (item) => item.category === "schedule",
 );
+const itemsByCategory = handbookItems.reduce((groups, item) => {
+  const items = groups.get(item.category) || [];
+  items.push(item);
+  groups.set(item.category, items);
+  return groups;
+}, new Map());
+const handbookItemsById = new Map(handbookItems.map((item) => [item.id, item]));
+const scheduleItemsByDate = new Map(
+  scheduleItems.map((item) => [item.date, item]),
+);
 const homeHero = document.querySelector("#homeHero");
 const todayScheduleCard = document.querySelector("#todayScheduleCard");
 const todayScheduleDate = document.querySelector("#todayScheduleDate");
@@ -45,7 +55,15 @@ let lyricsLarge = false;
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
 const koreaTimeZone = "Asia/Seoul";
-
+const koreaDateTimeFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: koreaTimeZone,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
 
 // =========================================================
 // 2. URL 해시와 화면 이동
@@ -107,22 +125,17 @@ function showHome() {
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
-  
-// =========================================================
-// 9. 이벤트 바인딩
-// =========================================================
-tabs.forEach((tab) => tab.classList.remove("active"));
+  tabs.forEach((tab) => tab.classList.remove("active"));
   renderTodayScheduleCard();
 }
 
 function filterItems() {
-  const items = handbookItems.filter((item) => {
-    if (activeCategory !== "schedule") {
-      return item.category === activeCategory;
-    }
+  if (activeCategory === "schedule") {
+    const schedule = handbookItemsById.get(activeScheduleDay);
+    return schedule ? [schedule] : [];
+  }
 
-    return item.category === "schedule" && item.id === activeScheduleDay;
-  });
+  const items = itemsByCategory.get(activeCategory) || [];
 
   if (activeCategory !== "word" || !activeWordQuery) {
     return items;
@@ -140,9 +153,8 @@ function getSearchText(item) {
 }
 
 function getLyricsSong() {
-  return handbookItems.find(
-    (item) => item.category === "song" && item.id === activeLyricsSongId,
-  );
+  const item = handbookItemsById.get(activeLyricsSongId);
+  return item?.category === "song" ? item : null;
 }
 
 function updateScheduleTabs() {
@@ -270,15 +282,7 @@ function getTestNowParts() {
 }
 
 function getKoreaNowPartsFromDate(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: koreaTimeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
+  const parts = koreaDateTimeFormatter.formatToParts(date);
   const value = (type) => parts.find((part) => part.type === type)?.value;
 
   return {
@@ -306,7 +310,7 @@ function formatKoreaDateLabel(dateKey = "") {
 
 function getTodayScheduleData() {
   const koreaNow = getKoreaNowParts();
-  const day = scheduleItems.find((item) => item.date === koreaNow.dateKey);
+  const day = scheduleItemsByDate.get(koreaNow.dateKey);
 
   if (!day) return null;
 
@@ -495,6 +499,9 @@ function render() {
   showCategoryPage();
 }
 
+// =========================================================
+// 9. 이벤트 바인딩
+// =========================================================
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     openCategory(tab.dataset.category);

@@ -8,6 +8,7 @@ const path = require("node:path");
 const host = process.env.HOST || "0.0.0.0";
 const port = Number(process.env.PORT || 5173);
 const root = __dirname;
+const rootWithSeparator = `${root}${path.sep}`;
 const liveReloadClients = new Set();
 
 // 확장자별 Content-Type 매핑입니다.
@@ -53,7 +54,7 @@ const server = http.createServer((req, res) => {
   }
 
   const filePath = path.resolve(root, `.${requestedPath}`);
-  if (!filePath.startsWith(`${root}${path.sep}`) && filePath !== root) {
+  if (!filePath.startsWith(rootWithSeparator) && filePath !== root) {
     send(res, 403, "Forbidden");
     return;
   }
