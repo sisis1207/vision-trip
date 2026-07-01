@@ -11,7 +11,7 @@ export const infoItems = [
 교회 : 삿포로 가스펠교회
 숙소 : 마나 프리룸
 주소 : 4-chōme-410 Hanakawa Minami 8 Jō
-인원 : 11명`,
+인원 : 12명`,
     tags: ["안내"],
   },
   {
@@ -34,7 +34,8 @@ export const infoItems = [
     ● 김영창
     ● 김영욱
     ● 김자영
-    ● 노주아`,
+    ● 노주아
+    ● 윤예준`,
     tags: ["안내"],
   },
 ];

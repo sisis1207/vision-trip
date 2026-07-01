@@ -54,7 +54,7 @@ export const scheduleItems = [
       { time: "12:00 ~ 13:00", title: "점심 식사" },
       { time: "13:00 ~ 18:00", title: "노방전도", note: "훗카이도국립대학" },
       { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
-      { time: "21:30 ~ 22:30", title: "저녁 집회", note: "간증 - 김준서" },
+      { time: "21:30 ~ 22:30", title: "저녁 집회" },
     ],
     tags: ["일정"],
   },
@@ -85,7 +85,7 @@ export const scheduleItems = [
         section: "문화교류 일정",
         time: "16:00",
         title: "여는 예배",
-        note: "- 찬양 ( 꽃들도, 더 원합니다 )",
+        note: "- 찬양 ( 꽃들도, 더 원합니다 )\n- 간증 : 김준서",
       },
       {
         section: "문화교류 일정",
