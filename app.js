@@ -709,6 +709,30 @@ function preventBrowserDoubleTapZoom() {
 function preventPullToRefresh() {
   let startY = 0;
 
+  function canScrollInsideTarget(target, deltaY) {
+    let element = target instanceof Element ? target : target?.parentElement;
+
+    while (element && element !== document.body) {
+      const style = window.getComputedStyle(element);
+      const canScrollY = /(auto|scroll)/.test(style.overflowY);
+      const hasScrollableContent = element.scrollHeight > element.clientHeight;
+
+      if (canScrollY && hasScrollableContent) {
+        const canScrollUp = element.scrollTop > 0;
+        const canScrollDown =
+          element.scrollTop + element.clientHeight < element.scrollHeight;
+
+        if ((deltaY > 0 && canScrollUp) || (deltaY < 0 && canScrollDown)) {
+          return true;
+        }
+      }
+
+      element = element.parentElement;
+    }
+
+    return false;
+  }
+
   document.addEventListener(
     "touchstart",
     (event) => {
@@ -721,9 +745,14 @@ function preventPullToRefresh() {
     "touchmove",
     (event) => {
       const currentY = event.touches[0]?.clientY || 0;
-      const isPullingDown = currentY > startY;
+      const deltaY = currentY - startY;
+      const isPullingDown = deltaY > 0;
 
-      if (window.scrollY <= 0 && isPullingDown) {
+      if (
+        window.scrollY <= 0 &&
+        isPullingDown &&
+        !canScrollInsideTarget(event.target, deltaY)
+      ) {
         event.preventDefault();
       }
     },
