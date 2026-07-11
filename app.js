@@ -289,17 +289,7 @@ function renderScheduleNote(note = "") {
   if (!match) return `<p>${note}</p>`;
 
   const reference = match[1].trim();
-  return `
-    <p>
-      <button
-        class="word-reference-link"
-        type="button"
-        data-word-reference="${reference}"
-      >
-        본문 : ${reference}
-      </button>
-    </p>
-  `;
+  return `<p><button class="word-reference-link" type="button" data-word-reference="${reference}">본문 : ${reference}</button></p>`;
 }
 
 function renderSchedule(schedule = []) {
@@ -851,7 +841,7 @@ window.addEventListener("keydown", (event) => {
 
 
 // =========================================================
-// 12. 모바일 브라우저 확대 및 당겨 새로고침 방지
+// 12. 모바일 브라우저 확대 방지
 // =========================================================
 function preventBrowserDoubleTapZoom() {
   let lastTouchEndAt = 0;
@@ -879,62 +869,7 @@ function preventBrowserDoubleTapZoom() {
   );
 }
 
-function preventPullToRefresh() {
-  let startY = 0;
-
-  function canScrollInsideTarget(target, deltaY) {
-    let element = target instanceof Element ? target : target?.parentElement;
-
-    while (element && element !== document.body) {
-      const style = window.getComputedStyle(element);
-      const canScrollY = /(auto|scroll)/.test(style.overflowY);
-      const hasScrollableContent = element.scrollHeight > element.clientHeight;
-
-      if (canScrollY && hasScrollableContent) {
-        const canScrollUp = element.scrollTop > 0;
-        const canScrollDown =
-          element.scrollTop + element.clientHeight < element.scrollHeight;
-
-        if ((deltaY > 0 && canScrollUp) || (deltaY < 0 && canScrollDown)) {
-          return true;
-        }
-      }
-
-      element = element.parentElement;
-    }
-
-    return false;
-  }
-
-  document.addEventListener(
-    "touchstart",
-    (event) => {
-      startY = event.touches[0]?.clientY || 0;
-    },
-    { passive: true },
-  );
-
-  document.addEventListener(
-    "touchmove",
-    (event) => {
-      const currentY = event.touches[0]?.clientY || 0;
-      const deltaY = currentY - startY;
-      const isPullingDown = deltaY > 0;
-
-      if (
-        window.scrollY <= 0 &&
-        isPullingDown &&
-        !canScrollInsideTarget(event.target, deltaY)
-      ) {
-        event.preventDefault();
-      }
-    },
-    { passive: false },
-  );
-}
-
 preventBrowserDoubleTapZoom();
-preventPullToRefresh();
 
 
 // =========================================================
