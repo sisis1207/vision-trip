@@ -46,7 +46,11 @@ export const scheduleItems = [
     date: "2026-08-12",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
-      { time: "09:30", title: "오전 예배 및 조 나누기" },
+      {
+        time: "09:30",
+        title: "오전 예배 및 조 나누기",
+        note: "본문 : 누가복음 13장 31~35절",
+      },
       {
         time: "10:30 ~ 12:00",
         title: "노방전도 준비 및 이동",

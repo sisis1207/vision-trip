@@ -6,7 +6,7 @@ import { categoryLabels, handbookItems } from "./data/index.js";
 // =========================================================
 // 1. 데이터 및 DOM 참조
 // =========================================================
-const validCategories = Object.keys(categoryLabels);
+const validCategories = new Set(Object.keys(categoryLabels));
 const scheduleItems = handbookItems.filter(
   (item) => item.category === "schedule",
 );
@@ -17,9 +17,33 @@ const itemsByCategory = handbookItems.reduce((groups, item) => {
   return groups;
 }, new Map());
 const handbookItemsById = new Map(handbookItems.map((item) => [item.id, item]));
-const scheduleItemsByDate = new Map(
-  scheduleItems.map((item) => [item.date, item]),
+const todaySchedulesByDate = new Map(
+  scheduleItems.map((day) => [
+    day.date,
+    {
+      dateLabel: formatKoreaDateLabel(day.date),
+      dayLabel: day.id.replace("day-", "DAY "),
+      events: day.schedule.map((event, index) => ({
+        ...event,
+        index,
+        minutes: parseScheduleMinutes(event.time),
+      })),
+    },
+  ]),
 );
+// 검색할 때마다 문자열을 다시 조합하지 않도록 시작 시 한 번만 색인합니다.
+const searchableTextById = new Map(
+  handbookItems.map((item) => [item.id, getSearchText(item)]),
+);
+const bibleReferenceById = new Map(
+  handbookItems.map((item) => [item.id, parseBibleReference(item.title)]),
+);
+const searchableCategories = new Set(["song", "word"]);
+const searchPlaceholders = {
+  song: "찬양 검색",
+  word: "말씀 검색",
+};
+const urlParams = new URLSearchParams(window.location.search);
 const homeHero = document.querySelector("#homeHero");
 const todayScheduleCard = document.querySelector("#todayScheduleCard");
 const todayScheduleDate = document.querySelector("#todayScheduleDate");
@@ -29,6 +53,7 @@ const todayToggle = document.querySelector("#todayToggle");
 const categoryTabs = document.querySelector("#categoryTabs");
 const pageHeader = document.querySelector("#pageHeader");
 const pageTitle = document.querySelector("#pageTitle");
+const wordSizeToggle = document.querySelector("#wordSizeToggle");
 const backButton = document.querySelector("#backButton");
 const list = document.querySelector("#contentList");
 const tabs = Array.from(document.querySelectorAll(".tab"));
@@ -37,6 +62,7 @@ const scheduleDayButtons = Array.from(
   document.querySelectorAll(".schedule-tab"),
 );
 const wordSearch = document.querySelector("#wordSearch");
+const wordSearchLabel = document.querySelector('label[for="wordSearchInput"]');
 const wordSearchInput = document.querySelector("#wordSearchInput");
 const installButton = document.querySelector("#installButton");
 const installSheet = document.querySelector("#installSheet");
@@ -49,9 +75,13 @@ const closeImageViewer = document.querySelector("#closeImageViewer");
 let activeCategory = null;
 let activeScheduleDay = "day-1";
 let activeLyricsSongId = null;
-let activeWordQuery = "";
+const activeSearchQueries = {
+  song: "",
+  word: "",
+};
 let todayExpanded = false;
 let lyricsLarge = false;
+let wordsLarge = false;
 let activeLyricsMode = "all";
 const lyricsModeOptions = [
   { value: "all", label: "전체" },
@@ -88,7 +118,7 @@ function getHashValue() {
 
 function getCategoryFromHash() {
   const category = getHashValue();
-  return validCategories.includes(category) ? category : null;
+  return validCategories.has(category) ? category : null;
 }
 
 function getLyricsSongIdFromHash() {
@@ -96,10 +126,8 @@ function getLyricsSongIdFromHash() {
   if (!hash.startsWith("lyrics/")) return null;
 
   const songId = hash.replace("lyrics/", "");
-  const song = handbookItems.find(
-    (item) => item.category === "song" && item.id === songId,
-  );
-  return song ? song.id : null;
+  const song = handbookItemsById.get(songId);
+  return song?.category === "song" ? song.id : null;
 }
 
 function openCategory(category) {
@@ -146,16 +174,27 @@ function filterItems() {
 
   const items = itemsByCategory.get(activeCategory) || [];
 
-  if (activeCategory !== "word" || !activeWordQuery) {
+  const activeSearchQuery = searchableCategories.has(activeCategory)
+    ? activeSearchQueries[activeCategory]
+    : "";
+
+  if (!activeSearchQuery) {
     return items;
   }
 
-  const query = activeWordQuery.toLowerCase();
-  return items.filter((item) => getSearchText(item).includes(query));
+  const query = activeSearchQuery.toLowerCase();
+  const bibleReferenceQuery =
+    activeCategory === "word" ? parseBibleReference(activeSearchQuery) : null;
+
+  return items.filter(
+    (item) =>
+      searchableTextById.get(item.id).includes(query) ||
+      isBibleReferenceMatch(bibleReferenceById.get(item.id), bibleReferenceQuery),
+  );
 }
 
 function getSearchText(item) {
-  return [item.title, item.body, ...(item.tags || [])]
+  return [item.title, item.body, item.lyrics, ...(item.tags || [])]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
@@ -173,10 +212,96 @@ function updateScheduleTabs() {
   });
 }
 
+function updateSearchControl() {
+  const isSearchableCategory = searchableCategories.has(activeCategory);
+  wordSearch.hidden = !isSearchableCategory;
+
+  if (!isSearchableCategory) return;
+
+  const placeholder = searchPlaceholders[activeCategory];
+  wordSearchLabel.textContent = placeholder;
+  wordSearchInput.placeholder = placeholder;
+  wordSearchInput.value = activeSearchQueries[activeCategory];
+}
+
+function updateWordSizeToggle() {
+  const isWordPage = activeCategory === "word";
+  wordSizeToggle.hidden = !isWordPage;
+
+  if (!isWordPage) return;
+
+  wordSizeToggle.classList.toggle("active", wordsLarge);
+  wordSizeToggle.title = wordsLarge ? "기본 크기" : "크게 보기";
+  wordSizeToggle.setAttribute(
+    "aria-label",
+    wordsLarge ? "말씀 기본 크기로 보기" : "말씀 크게 보기",
+  );
+  wordSizeToggle.innerHTML = renderZoomIcon(wordsLarge);
+}
+
+// "누가복음 13장 31~35절" 같은 범위 검색을 개별 절 카드와 연결합니다.
+function parseBibleReference(text = "") {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  const match = normalized.match(
+    /^(.+?)\s*(\d+)\s*장\s*(\d+)\s*(?:[~\-–—]\s*(\d+)\s*)?절?$/,
+  );
+
+  if (!match) return null;
+
+  const startVerse = Number(match[3]);
+  const endVerse = Number(match[4] || match[3]);
+
+  return {
+    book: match[1].trim(),
+    chapter: Number(match[2]),
+    startVerse: Math.min(startVerse, endVerse),
+    endVerse: Math.max(startVerse, endVerse),
+  };
+}
+
+function isBibleReferenceMatch(itemReference, queryReference) {
+  if (!itemReference || !queryReference) return false;
+
+  return (
+    itemReference.book === queryReference.book &&
+    itemReference.chapter === queryReference.chapter &&
+    itemReference.startVerse <= queryReference.endVerse &&
+    itemReference.endVerse >= queryReference.startVerse
+  );
+}
+
+function openWordReference(reference) {
+  activeSearchQueries.word = reference;
+  window.location.hash = "word";
+
+  if (activeCategory === "word") {
+    updateSearchControl();
+    renderList();
+  }
+}
+
 
 // =========================================================
 // 4. 콘텐츠 카드 렌더링
 // =========================================================
+function renderScheduleNote(note = "") {
+  const match = note.match(/^본문\s*:\s*(.+)$/);
+  if (!match) return `<p>${note}</p>`;
+
+  const reference = match[1].trim();
+  return `
+    <p>
+      <button
+        class="word-reference-link"
+        type="button"
+        data-word-reference="${reference}"
+      >
+        본문 : ${reference}
+      </button>
+    </p>
+  `;
+}
+
 function renderSchedule(schedule = []) {
   let currentSection = "";
 
@@ -200,7 +325,7 @@ function renderSchedule(schedule = []) {
               <time>${event.time}</time>
               <div>
                 <strong>${event.title}</strong>
-                ${event.note ? `<p>${event.note}</p>` : ""}
+                ${event.note ? renderScheduleNote(event.note) : ""}
               </div>
             </div>
           `;
@@ -217,6 +342,10 @@ function renderTags(tags = []) {
 function renderEntryContent(item) {
   if (item.schedule) {
     return renderSchedule(item.schedule);
+  }
+
+  if (item.category === "word") {
+    return `<p class="word-body">${item.body}</p>`;
   }
 
   if (item.image) {
@@ -236,8 +365,43 @@ function renderLyricsButton(item) {
   return `<button class="lyrics-button" type="button" data-lyrics-id="${item.id}" title="${item.title} 가사만 보기" aria-label="${item.title} 가사만 보기">♪</button>`;
 }
 
-function renderLyricsModeButtons() {
-  return lyricsModeOptions
+function renderZoomIcon(isExpanded) {
+  return `
+    <svg
+      class="lyrics-zoom-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle cx="10.5" cy="10.5" r="5.5"></circle>
+      <path d="m15 15 4 4"></path>
+      <path d="M8 10.5h5"></path>
+      ${isExpanded ? "" : '<path d="M10.5 8v5"></path>'}
+    </svg>
+  `;
+}
+
+function hasLyricClass(song, className) {
+  const classPattern = new RegExp(`class=["'][^"']*\\b${className}\\b`);
+  return classPattern.test(song.lyrics || "");
+}
+
+function getLyricsModeOptions(song) {
+  const hasKo = hasLyricClass(song, "lyric-ko");
+  const hasJaOriginal = hasLyricClass(song, "lyric-ja-original");
+  const hasPronunciation = hasLyricClass(song, "lyric-ja");
+  const hasMultipleLanguages = hasJaOriginal || hasPronunciation;
+
+  return lyricsModeOptions.filter(({ value }) => {
+    if (value === "all") return true;
+    if (value === "ko") return hasKo && hasMultipleLanguages;
+    if (value === "ja-original") return hasJaOriginal;
+    if (value === "pronunciation") return hasPronunciation;
+    return false;
+  });
+}
+
+function renderLyricsModeButtons(song) {
+  return getLyricsModeOptions(song)
     .map(
       ({ value, label }) => `
         <button
@@ -255,7 +419,7 @@ function renderLyricsModeButtons() {
 
 function renderEntry(item) {
   return `
-    <article class="entry">
+    <article class="entry ${item.category === "word" && wordsLarge ? "word-large" : ""}">
       <div>
         <div class="entry-title-row">
           <h3>${item.title}</h3>
@@ -274,8 +438,11 @@ function renderList() {
   const items = filterItems();
 
   if (!items.length) {
+    const hasSearchQuery =
+      searchableCategories.has(activeCategory) &&
+      activeSearchQueries[activeCategory];
     list.innerHTML =
-      activeCategory === "word" && activeWordQuery
+      hasSearchQuery
         ? '<div class="empty-state">검색 결과가 없습니다.</div>'
         : '<div class="empty-state">등록된 내용이 없습니다.</div>';
     return;
@@ -294,9 +461,8 @@ function getKoreaNowParts(date = new Date()) {
 }
 
 function getTestNowParts() {
-  const params = new URLSearchParams(window.location.search);
-  const testDate = params.get("testDate");
-  const testTime = params.get("testTime");
+  const testDate = urlParams.get("testDate");
+  const testTime = urlParams.get("testTime");
 
   if (!testDate && !testTime) return null;
 
@@ -340,16 +506,11 @@ function formatKoreaDateLabel(dateKey = "") {
 
 function getTodayScheduleData() {
   const koreaNow = getKoreaNowParts();
-  const day = scheduleItemsByDate.get(koreaNow.dateKey);
+  const todaySchedule = todaySchedulesByDate.get(koreaNow.dateKey);
 
-  if (!day) return null;
+  if (!todaySchedule) return null;
 
-  const events = day.schedule.map((event, index) => ({
-    ...event,
-    index,
-    minutes: parseScheduleMinutes(event.time),
-  }));
-  const eventsByDistance = [...events].sort(
+  const eventsByDistance = [...todaySchedule.events].sort(
     (a, b) =>
       Math.abs(a.minutes - koreaNow.minutes) -
       Math.abs(b.minutes - koreaNow.minutes),
@@ -357,13 +518,13 @@ function getTodayScheduleData() {
   const nearest = eventsByDistance[0];
 
   const visibleEvents = todayExpanded
-    ? events
+    ? todaySchedule.events
     : eventsByDistance.slice(0, 3).sort((a, b) => a.minutes - b.minutes);
 
   return {
-    dateLabel: formatKoreaDateLabel(day.date),
-    dayLabel: day.id.replace("day-", "DAY "),
-    events,
+    dateLabel: todaySchedule.dateLabel,
+    dayLabel: todaySchedule.dayLabel,
+    events: todaySchedule.events,
     nearestIndex: nearest?.index,
     visibleEvents,
   };
@@ -445,6 +606,11 @@ function showLyricsPage() {
     return;
   }
 
+  const availableLyricsModes = getLyricsModeOptions(song);
+  if (!availableLyricsModes.some(({ value }) => value === activeLyricsMode)) {
+    activeLyricsMode = "all";
+  }
+
   installButton.hidden = true;
   homeHero.hidden = true;
   categoryTabs.hidden = true;
@@ -454,6 +620,7 @@ function showLyricsPage() {
   wordSearch.hidden = true;
   list.hidden = false;
   pageTitle.textContent = `${song.title} 가사`;
+  wordSizeToggle.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
   list.innerHTML = `
     <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}" data-lyrics-view="${activeLyricsMode}">
@@ -467,20 +634,11 @@ function showLyricsPage() {
             title="${lyricsLarge ? "기본 크기" : "크게 보기"}"
             aria-label="${lyricsLarge ? "가사 기본 크기로 보기" : "가사 크게 보기"}"
           >
-            <svg
-              class="lyrics-zoom-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <circle cx="10.5" cy="10.5" r="5.5"></circle>
-              <path d="m15 15 4 4"></path>
-              <path d="M8 10.5h5"></path>
-              ${lyricsLarge ? "" : '<path d="M10.5 8v5"></path>'}
-            </svg>
+            ${renderZoomIcon(lyricsLarge)}
           </button>
         </div>
-        <div class="lyrics-mode-tabs" aria-label="가사 표시 방식">
-          ${renderLyricsModeButtons()}
+        <div class="lyrics-mode-tabs" style="--lyrics-mode-count: ${availableLyricsModes.length}" aria-label="가사 표시 방식">
+          ${renderLyricsModeButtons(song)}
         </div>
         <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>
       </div>
@@ -500,7 +658,8 @@ function showCategoryPage() {
     tab.classList.toggle("active", tab.dataset.category === activeCategory),
   );
   updateScheduleTabs();
-  wordSearch.hidden = activeCategory !== "word";
+  updateSearchControl();
+  updateWordSizeToggle();
 
   if (activeCategory === "memo") {
     renderMemoPage();
@@ -563,7 +722,15 @@ scheduleDayButtons.forEach((button) => {
 });
 
 wordSearchInput.addEventListener("input", () => {
-  activeWordQuery = wordSearchInput.value.trim();
+  if (!searchableCategories.has(activeCategory)) return;
+
+  activeSearchQueries[activeCategory] = wordSearchInput.value.trim();
+  renderList();
+});
+
+wordSizeToggle.addEventListener("click", () => {
+  wordsLarge = !wordsLarge;
+  updateWordSizeToggle();
   renderList();
 });
 
@@ -634,6 +801,12 @@ function hideImageViewer() {
 }
 
 list.addEventListener("click", (event) => {
+  const wordReferenceLink = event.target.closest("[data-word-reference]");
+  if (wordReferenceLink) {
+    openWordReference(wordReferenceLink.dataset.wordReference);
+    return;
+  }
+
   if (event.target.closest("[data-lyrics-size-toggle]")) {
     lyricsLarge = !lyricsLarge;
     showLyricsPage();

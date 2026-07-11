@@ -71,15 +71,19 @@ export const songItems = [
 `,
     tags: ["찬양"],
   },
-  /*test*/
+  /*주님이 주신 땅으로*/
   {
     id: "song-3",
     category: "song",
-    title: "test",
-    body: "테스트",
-    lyrics: `<span class='lyric-ko'>테스트</span>
-    <span class='lyric-ja'>테스트</span>
-    <span class='lyric-ja-original'>테스트</span>`,
+    title: "주님이 주신 땅으로",
+    body: "",
+    image: "./assets/songs/give me this hill country.jpg",
+    lyrics: `<span class='lyric-ko'>주님이 주신 땅으로 한 걸음씩 나아갈 때에</span>
+    <span class='lyric-ko'>수많은 적들과 견고한 성이 나를 두렵게 하지만</span>
+    <span class='lyric-ko'>주님을 신뢰함으로 주님을 의지함으로</span>
+    <span class='lyric-ko'>주님이 주시는 담대함으로 큰 소리 외치며 나아가네</span>
+    <span class='lyric-ko'>이 산지를 내게 주소서 그날에 주께서 말씀하신</span>
+    <span class='lyric-ko'>이제 내가 주님의 이름으로 그 땅을 취하리니</span>`,
     tags: ["찬양"],
   },
 ];

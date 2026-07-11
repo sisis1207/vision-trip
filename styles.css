@@ -355,42 +355,11 @@ h1 {
   font-weight: 800;
 }
 
-.today-icon {
-  position: relative;
-  flex: 0 0 auto;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--accent);
-  border-radius: 4px;
-}
-
 .today-character {
   width: 36px;
   height: 36px;
   object-fit: contain;
   flex-shrink: 0;
-}
-
-.today-icon::before,
-.today-icon::after {
-  content: "";
-  position: absolute;
-  background: var(--accent);
-}
-
-.today-icon::before {
-  top: 4px;
-  left: 2px;
-  right: 2px;
-  height: 2px;
-}
-
-.today-icon::after {
-  top: -4px;
-  left: 4px;
-  width: 6px;
-  height: 4px;
-  box-shadow: 6px 0 0 var(--accent);
 }
 
 .today-date {
@@ -549,6 +518,13 @@ h1 {
   line-height: 1.1;
 }
 
+.page-title-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
 .back-button {
   display: flex;
   align-items: center;
@@ -684,6 +660,17 @@ h1 {
   line-height: 1.55;
 }
 
+.word-body {
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+.word-large .word-body {
+  font-size: 1.28rem;
+  line-height: 1.7;
+}
+
 .tool-entry {
   gap: 12px;
 }
@@ -759,7 +746,7 @@ h1 {
 
 .lyrics-mode-tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--lyrics-mode-count, 4), minmax(0, 1fr));
   gap: 6px;
   margin: 0 0 12px;
 }
@@ -1000,10 +987,24 @@ h1 {
 }
 
 .schedule-card p {
-  margin: 5px 0 0;
+  margin: 3px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.5;
+  white-space: normal;
+}
+
+.word-reference-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  color: var(--accent);
+  background: transparent;
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* =========================================================

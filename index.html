@@ -202,18 +202,39 @@
           </button>
           <div>
             <p class="eyebrow">Vision Trip</p>
-            <h2 id="pageTitle">안내</h2>
+            <div class="page-title-row">
+              <h2 id="pageTitle">안내</h2>
+              <button
+                class="lyrics-size-button"
+                id="wordSizeToggle"
+                type="button"
+                title="크게 보기"
+                aria-label="말씀 크게 보기"
+                hidden
+              >
+                <svg
+                  class="lyrics-zoom-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="10.5" cy="10.5" r="5.5"></circle>
+                  <path d="m15 15 4 4"></path>
+                  <path d="M8 10.5h5"></path>
+                  <path d="M10.5 8v5"></path>
+                </svg>
+              </button>
+            </div>
           </div>
         </section>
 
-        <!-- 말씀 검색 영역: 말씀 카테고리에서만 app.js가 표시 -->
+        <!-- 검색 영역: 찬양 / 말씀 카테고리에서 app.js가 표시 -->
         <section class="word-search" id="wordSearch" hidden>
-          <label class="sr-only" for="wordSearchInput">말씀 검색</label>
+          <label class="sr-only" for="wordSearchInput">검색</label>
           <input
             id="wordSearchInput"
             type="search"
             autocomplete="off"
-            placeholder="말씀 검색"
+            placeholder="검색"
           />
         </section>
 
