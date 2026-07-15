@@ -49,7 +49,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let requestedPath = decodeURIComponent(url.pathname);
+  let requestedPath;
+
+  try {
+    requestedPath = decodeURIComponent(url.pathname);
+  } catch {
+    send(res, 400, "Bad request");
+    return;
+  }
 
   if (requestedPath === "/") {
     requestedPath = "/index.html";
@@ -86,6 +93,8 @@ server.listen(port, host, () => {
 let reloadTimer;
 
 function broadcastReload(fileName) {
+  if (liveReloadClients.size === 0) return;
+
   clearTimeout(reloadTimer);
   reloadTimer = setTimeout(() => {
     for (const client of liveReloadClients) {
@@ -98,5 +107,6 @@ fs.watch(root, { recursive: true }, (eventType, fileName) => {
   if (!fileName) return;
   if (fileName.includes(".git")) return;
   if (fileName.includes("node_modules")) return;
+  if (path.extname(fileName) === ".log") return;
   broadcastReload(fileName);
 });

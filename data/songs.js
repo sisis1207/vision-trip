@@ -86,4 +86,72 @@ export const songItems = [
     <span class='lyric-ko'>이제 내가 주님의 이름으로 그 땅을 취하리니</span>`,
     tags: ["찬양"],
   },
+  {
+    id: "song-4",
+    category: "song",
+    title: "내 모습 이대로",
+    image: "./assets/songs/just as i am.png",
+    lyrics: `<span class='lyric-ko'>내 모습 이대로 사랑하시네
+    연약함 그대로 사랑하시네</span>
+<span class='lyric-ko'>나의 모든 발걸음 주가 아시나니
+날 인도하소서</span>
+<span class='lyric-ko'>주의 날개 아래 거하는 것
+주의 임재 안에 거하는 것</span>
+<span class='lyric-ko'>나의 가장 큰 소망 나의 가장 큰 은혜
+주와 함께 동행하는 일</span>`,
+    tags: ["찬양"],
+  },
+  {
+    id: "song-5",
+    category: "song",
+    title: "세상 모든 민족이",
+    image: "./assets/songs/as the waters cover the sea.png",
+    lyrics: `<span class='lyric-ko'>세상 모든 민족이 구원을 얻기까지
+    쉬지 않으시는 하나님
+
+    주의 심장 가지고 우리 이제 일어나
+    주 따르게 하소서
+
+    세상 모든 육체가 주의 영광 보도록
+    우릴 부르시는 하나님
+
+    주의 손과 발 되어 세상을 치유하며
+    주 섬기게 하소서
+
+    물이 바다 덮음 같이
+    여호와의 영광을 인정하는 것이
+    온 세상 가득하리라
+
+    물이 바다 덮음 같이
+    물이 바다 덮음 같이
+    물이 바다 덮음 같이
+
+    보리라 그 날에
+    주의 영광 가득한 세상
+
+    우리는 듣게 되리
+    온 세상 가득한 승리의 함성</span>`,
+    tags: ["찬양"],
+  },
+  {
+    id: "song-6",
+    category: "song",
+    title: "오늘 이곳에 계신 성령님",
+    image: "./assets/songs/oh holy spirit teach us.png",
+    lyrics: `<span class='lyric-ko'>오늘 이곳에 계신 성령님
+    우리에게 말씀하시고 우릴 가르치소서
+
+    닫힌 우리 맘 열어주시고
+    주의 빛으로 밝혀 우릴 인도하소서
+
+    주님보다 앞서지 않고
+    겸손하게 주님의 말씀 기다리리
+
+    주님 손에 우릴 드립니다
+    사랑으로 인도하소서
+
+    창조하신 모습 잃은 우리를
+    예수님 닮게 빚으소서</span>`,
+    tags: ["찬양"],
+  },
 ];
