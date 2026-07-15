@@ -58,7 +58,11 @@ export const scheduleItems = [
       { time: "12:00 ~ 13:00", title: "점심 식사" },
       { time: "13:00 ~ 18:00", title: "노방전도", note: "훗카이도국립대학" },
       { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
-      { time: "21:30 ~ 22:30", title: "저녁 집회" },
+      {
+        time: "21:30 ~ 22:30",
+        title: "저녁 집회",
+        note: "본문 : 요한복음 10장 27절",
+      },
     ],
     tags: ["일정"],
   },
@@ -78,6 +82,7 @@ export const scheduleItems = [
         section: "문화교류 일정",
         time: "09:00 ~ 10:00",
         title: "일본 선교 부흥예배",
+        note: "본문 : 마가복음 2장 1~12절",
       },
       {
         section: "문화교류 일정",
@@ -108,7 +113,12 @@ export const scheduleItems = [
         time: "19:30",
         title: "정리 및 마무리, 숙소복귀",
       },
-      { section: "문화교류 일정", time: "21:30", title: "저녁 예배" },
+      {
+        section: "문화교류 일정",
+        time: "21:30",
+        title: "저녁 예배",
+        note: "본문 : 시편 62편 5절",
+      },
     ],
     tags: ["일정"],
   },
@@ -120,7 +130,11 @@ export const scheduleItems = [
     date: "2026-08-14",
     schedule: [
       { time: "08:00", title: "기상 및 아침 식사" },
-      { time: "08:30", title: "아침 예배" },
+      {
+        time: "08:30",
+        title: "아침 예배",
+        note: "본문 : 누가복음 17장 7~10절",
+      },
       { time: "09:00", title: "조별 모임" },
       {
         time: "09:30",

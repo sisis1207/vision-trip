@@ -25,12 +25,19 @@ const assets = [
   "./assets/songs/flowers.png",
   "./assets/songs/give me this hill country.jpg",
   "./assets/songs/more.png",
+  "./assets/songs/as the waters cover the sea.png",
+  "./assets/songs/just as i am.png",
+  "./assets/songs/oh holy spirit teach us.png",
 ];
 
 // 설치 단계: 핵심 파일을 캐시에 저장합니다.
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(assets)));
-  self.skipWaiting();
+  event.waitUntil(
+    caches
+      .open(cacheName)
+      .then((cache) => cache.addAll(assets))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 // 활성화 단계: 현재 버전이 아닌 오래된 캐시를 삭제합니다.
@@ -44,9 +51,9 @@ self.addEventListener("activate", (event) => {
             .filter((key) => key !== cacheName)
             .map((key) => caches.delete(key)),
         ),
-      ),
+      )
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 // 요청 처리: 온라인이면 최신 파일을 받고, 실패하면 캐시를 사용합니다.

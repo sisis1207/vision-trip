@@ -7,16 +7,32 @@ import { categoryLabels, handbookItems } from "./data/index.js";
 // 1. 데이터 및 DOM 참조
 // =========================================================
 const validCategories = new Set(Object.keys(categoryLabels));
-const scheduleItems = handbookItems.filter(
-  (item) => item.category === "schedule",
-);
-const itemsByCategory = handbookItems.reduce((groups, item) => {
-  const items = groups.get(item.category) || [];
+const searchableCategories = new Set(["song", "word"]);
+const scheduleItems = [];
+const itemsByCategory = new Map();
+const handbookItemsById = new Map();
+const searchableTextById = new Map();
+const bibleReferenceById = new Map();
+
+// 앱 시작 시 한 번의 순회로 화면, 검색, 일정용 색인을 함께 만듭니다.
+for (const item of handbookItems) {
+  const items = itemsByCategory.get(item.category) || [];
   items.push(item);
-  groups.set(item.category, items);
-  return groups;
-}, new Map());
-const handbookItemsById = new Map(handbookItems.map((item) => [item.id, item]));
+  itemsByCategory.set(item.category, items);
+  handbookItemsById.set(item.id, item);
+
+  if (item.category === "schedule") {
+    scheduleItems.push(item);
+  }
+
+  if (searchableCategories.has(item.category)) {
+    searchableTextById.set(item.id, getSearchText(item));
+  }
+
+  if (item.category === "word") {
+    bibleReferenceById.set(item.id, parseBibleReference(item.title));
+  }
+}
 const todaySchedulesByDate = new Map(
   scheduleItems.map((day) => [
     day.date,
@@ -31,14 +47,6 @@ const todaySchedulesByDate = new Map(
     },
   ]),
 );
-// 검색할 때마다 문자열을 다시 조합하지 않도록 시작 시 한 번만 색인합니다.
-const searchableTextById = new Map(
-  handbookItems.map((item) => [item.id, getSearchText(item)]),
-);
-const bibleReferenceById = new Map(
-  handbookItems.map((item) => [item.id, parseBibleReference(item.title)]),
-);
-const searchableCategories = new Set(["song", "word"]);
 const searchPlaceholders = {
   song: "찬양 검색",
   word: "말씀 검색",
@@ -56,11 +64,9 @@ const pageTitle = document.querySelector("#pageTitle");
 const wordSizeToggle = document.querySelector("#wordSizeToggle");
 const backButton = document.querySelector("#backButton");
 const list = document.querySelector("#contentList");
-const tabs = Array.from(document.querySelectorAll(".tab"));
+const tabs = document.querySelectorAll(".tab");
 const scheduleTabs = document.querySelector("#scheduleTabs");
-const scheduleDayButtons = Array.from(
-  document.querySelectorAll(".schedule-tab"),
-);
+const scheduleDayButtons = document.querySelectorAll(".schedule-tab");
 const wordSearch = document.querySelector("#wordSearch");
 const wordSearchLabel = document.querySelector('label[for="wordSearchInput"]');
 const wordSearchInput = document.querySelector("#wordSearchInput");
@@ -90,6 +96,7 @@ const lyricsModeOptions = [
   { value: "pronunciation", label: "발음" },
 ];
 const lyricsModeValues = new Set(lyricsModeOptions.map(({ value }) => value));
+const lyricsModeOptionsBySongId = new Map();
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
 const memoStorageKey = "visionTripMemo";
 const koreaTimeZone = "Asia/Seoul";
@@ -125,7 +132,7 @@ function getLyricsSongIdFromHash() {
   const hash = getHashValue();
   if (!hash.startsWith("lyrics/")) return null;
 
-  const songId = hash.replace("lyrics/", "");
+  const songId = hash.slice("lyrics/".length);
   const song = handbookItemsById.get(songId);
   return song?.category === "song" ? song.id : null;
 }
@@ -154,6 +161,15 @@ function isLocalPreviewHost() {
 // =========================================================
 // 3. 홈 / 카테고리 화면 렌더링
 // =========================================================
+function showContentShell() {
+  installButton.hidden = true;
+  homeHero.hidden = true;
+  categoryTabs.hidden = true;
+  pageHeader.hidden = false;
+  todayScheduleCard.hidden = true;
+  list.hidden = false;
+}
+
 function showHome() {
   installButton.hidden = false;
   homeHero.hidden = false;
@@ -243,7 +259,7 @@ function updateWordSizeToggle() {
 function parseBibleReference(text = "") {
   const normalized = text.replace(/\s+/g, " ").trim();
   const match = normalized.match(
-    /^(.+?)\s*(\d+)\s*장\s*(\d+)\s*(?:[~\-–—]\s*(\d+)\s*)?절?$/,
+    /^(.+?)\s*(\d+)\s*(?:장|편)\s*(\d+)\s*(?:[~\-–—]\s*(\d+)\s*)?절?$/,
   );
 
   if (!match) return null;
@@ -376,22 +392,28 @@ function hasLyricClass(song, className) {
 }
 
 function getLyricsModeOptions(song) {
+  const cachedOptions = lyricsModeOptionsBySongId.get(song.id);
+  if (cachedOptions) return cachedOptions;
+
   const hasKo = hasLyricClass(song, "lyric-ko");
   const hasJaOriginal = hasLyricClass(song, "lyric-ja-original");
   const hasPronunciation = hasLyricClass(song, "lyric-ja");
   const hasMultipleLanguages = hasJaOriginal || hasPronunciation;
 
-  return lyricsModeOptions.filter(({ value }) => {
+  const availableOptions = lyricsModeOptions.filter(({ value }) => {
     if (value === "all") return true;
     if (value === "ko") return hasKo && hasMultipleLanguages;
     if (value === "ja-original") return hasJaOriginal;
     if (value === "pronunciation") return hasPronunciation;
     return false;
   });
+
+  lyricsModeOptionsBySongId.set(song.id, availableOptions);
+  return availableOptions;
 }
 
-function renderLyricsModeButtons(song) {
-  return getLyricsModeOptions(song)
+function renderLyricsModeButtons(availableOptions) {
+  return availableOptions
     .map(
       ({ value, label }) => `
         <button
@@ -469,11 +491,15 @@ function getTestNowParts() {
 
 function getKoreaNowPartsFromDate(date = new Date()) {
   const parts = koreaDateTimeFormatter.formatToParts(date);
-  const value = (type) => parts.find((part) => part.type === type)?.value;
+  const values = {};
+
+  for (const { type, value } of parts) {
+    values[type] = value;
+  }
 
   return {
-    dateKey: `${value("year")}-${value("month")}-${value("day")}`,
-    minutes: Number(value("hour")) * 60 + Number(value("minute")),
+    dateKey: `${values.year}-${values.month}-${values.day}`,
+    minutes: Number(values.hour) * 60 + Number(values.minute),
   };
 }
 
@@ -601,14 +627,9 @@ function showLyricsPage() {
     activeLyricsMode = "all";
   }
 
-  installButton.hidden = true;
-  homeHero.hidden = true;
-  categoryTabs.hidden = true;
-  pageHeader.hidden = false;
-  todayScheduleCard.hidden = true;
+  showContentShell();
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
-  list.hidden = false;
   pageTitle.textContent = `${song.title} 가사`;
   wordSizeToggle.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
@@ -628,7 +649,7 @@ function showLyricsPage() {
           </button>
         </div>
         <div class="lyrics-mode-tabs" style="--lyrics-mode-count: ${availableLyricsModes.length}" aria-label="가사 표시 방식">
-          ${renderLyricsModeButtons(song)}
+          ${renderLyricsModeButtons(availableLyricsModes)}
         </div>
         <div class="lyrics-text">${song.lyrics || "가사를 여기에 입력하세요."}</div>
       </div>
@@ -637,12 +658,7 @@ function showLyricsPage() {
 }
 
 function showCategoryPage() {
-  installButton.hidden = true;
-  homeHero.hidden = true;
-  categoryTabs.hidden = true;
-  pageHeader.hidden = false;
-  todayScheduleCard.hidden = true;
-  list.hidden = false;
+  showContentShell();
   pageTitle.textContent = categoryLabels[activeCategory];
   tabs.forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.category === activeCategory),
@@ -684,10 +700,11 @@ function render() {
 // =========================================================
 // 9. 이벤트 바인딩
 // =========================================================
-tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    openCategory(tab.dataset.category);
-  });
+categoryTabs.addEventListener("click", (event) => {
+  const tab = event.target.closest?.("[data-category]");
+  if (!tab || !categoryTabs.contains(tab)) return;
+
+  openCategory(tab.dataset.category);
 });
 
 backButton.addEventListener("click", () => {
@@ -704,11 +721,12 @@ backButton.addEventListener("click", () => {
   render();
 });
 
-scheduleDayButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activeScheduleDay = button.dataset.day;
-    render();
-  });
+scheduleTabs.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-day]");
+  if (!button || !scheduleTabs.contains(button)) return;
+
+  activeScheduleDay = button.dataset.day;
+  render();
 });
 
 wordSearchInput.addEventListener("input", () => {
