@@ -34,18 +34,23 @@ for (const item of handbookItems) {
   }
 }
 const todaySchedulesByDate = new Map(
-  scheduleItems.map((day) => [
-    day.date,
-    {
-      dateLabel: formatKoreaDateLabel(day.date),
-      dayLabel: day.id.replace("day-", "DAY "),
-      events: day.schedule.map((event, index) => ({
-        ...event,
-        index,
-        minutes: parseScheduleMinutes(event.time),
-      })),
-    },
-  ]),
+  scheduleItems.map((day) => {
+    const events = day.schedule.map((event, index) => ({
+      ...event,
+      index,
+      minutes: parseScheduleMinutes(event.time),
+    }));
+
+    return [
+      day.date,
+      {
+        dateLabel: formatKoreaDateLabel(day.date),
+        dayLabel: day.id.replace("day-", "DAY "),
+        events,
+        eventsByTime: [...events].sort((a, b) => a.minutes - b.minutes),
+      },
+    ];
+  }),
 );
 const searchPlaceholders = {
   song: "찬양 검색",
@@ -109,6 +114,7 @@ const koreaDateTimeFormatter = new Intl.DateTimeFormat("en-CA", {
   minute: "2-digit",
   hourCycle: "h23",
 });
+const koreaWeekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
 // =========================================================
 // 2. URL 해시와 화면 이동
@@ -515,9 +521,7 @@ function formatKoreaDateLabel(dateKey = "") {
   if (!year || !month || !day) return "";
 
   const date = new Date(Date.UTC(year, month - 1, day));
-  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-
-  return `${month}월 ${day}일(${weekdays[date.getUTCDay()]})`;
+  return `${month}월 ${day}일(${koreaWeekdays[date.getUTCDay()]})`;
 }
 
 function getTodayScheduleData() {
@@ -526,16 +530,20 @@ function getTodayScheduleData() {
 
   if (!todaySchedule) return null;
 
-  const eventsByDistance = [...todaySchedule.events].sort(
-    (a, b) =>
-      Math.abs(a.minutes - koreaNow.minutes) -
-      Math.abs(b.minutes - koreaNow.minutes),
-  );
-  const nearest = eventsByDistance[0];
+  let nearest;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  for (const event of todaySchedule.events) {
+    const distance = Math.abs(event.minutes - koreaNow.minutes);
+    if (distance < nearestDistance) {
+      nearest = event;
+      nearestDistance = distance;
+    }
+  }
 
   const visibleEvents = todayExpanded
     ? todaySchedule.events
-    : eventsByDistance.slice(0, 3).sort((a, b) => a.minutes - b.minutes);
+    : todaySchedule.eventsByTime.slice(0, 3);
 
   return {
     dateLabel: todaySchedule.dateLabel,

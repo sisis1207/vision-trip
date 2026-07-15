@@ -38,4 +38,25 @@ export const infoItems = [
     ● 윤예준`,
     tags: ["안내"],
   },
+  {
+    id: "info-4",
+    category: "info",
+    title: "1조",
+    body: `미정`,
+    tags: ["안내"],
+  },
+  {
+    id: "info-5",
+    category: "info",
+    title: "2조",
+    body: `미정`,
+    tags: ["안내"],
+  },
+  {
+    id: "info-6",
+    category: "info",
+    title: "3조",
+    body: `미정`,
+    tags: ["안내"],
+  },
 ];
