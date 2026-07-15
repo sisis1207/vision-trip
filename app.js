@@ -13,6 +13,7 @@ const itemsByCategory = new Map();
 const handbookItemsById = new Map();
 const searchableTextById = new Map();
 const bibleReferenceById = new Map();
+const koreaWeekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
 // 앱 시작 시 한 번의 순회로 화면, 검색, 일정용 색인을 함께 만듭니다.
 for (const item of handbookItems) {
@@ -47,7 +48,6 @@ const todaySchedulesByDate = new Map(
         dateLabel: formatKoreaDateLabel(day.date),
         dayLabel: day.id.replace("day-", "DAY "),
         events,
-        eventsByTime: [...events].sort((a, b) => a.minutes - b.minutes),
       },
     ];
   }),
@@ -114,7 +114,6 @@ const koreaDateTimeFormatter = new Intl.DateTimeFormat("en-CA", {
   minute: "2-digit",
   hourCycle: "h23",
 });
-const koreaWeekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
 // =========================================================
 // 2. URL 해시와 화면 이동
@@ -530,20 +529,16 @@ function getTodayScheduleData() {
 
   if (!todaySchedule) return null;
 
-  let nearest;
-  let nearestDistance = Number.POSITIVE_INFINITY;
-
-  for (const event of todaySchedule.events) {
-    const distance = Math.abs(event.minutes - koreaNow.minutes);
-    if (distance < nearestDistance) {
-      nearest = event;
-      nearestDistance = distance;
-    }
-  }
+  const eventsByDistance = [...todaySchedule.events].sort(
+    (a, b) =>
+      Math.abs(a.minutes - koreaNow.minutes) -
+      Math.abs(b.minutes - koreaNow.minutes),
+  );
+  const nearest = eventsByDistance[0];
 
   const visibleEvents = todayExpanded
     ? todaySchedule.events
-    : todaySchedule.eventsByTime.slice(0, 3);
+    : eventsByDistance.slice(0, 3).sort((a, b) => a.minutes - b.minutes);
 
   return {
     dateLabel: todaySchedule.dateLabel,
