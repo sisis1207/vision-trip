@@ -162,7 +162,6 @@ function isLocalPreviewHost() {
   );
 }
 
-
 // =========================================================
 // 3. 홈 / 카테고리 화면 렌더링
 // =========================================================
@@ -210,7 +209,10 @@ function filterItems() {
   return items.filter(
     (item) =>
       searchableTextById.get(item.id).includes(query) ||
-      isBibleReferenceMatch(bibleReferenceById.get(item.id), bibleReferenceQuery),
+      isBibleReferenceMatch(
+        bibleReferenceById.get(item.id),
+        bibleReferenceQuery,
+      ),
   );
 }
 
@@ -301,16 +303,30 @@ function openWordReference(reference) {
   }
 }
 
+function escapeHtml(value = "") {
+  return String(value).replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
+  );
+}
 
 // =========================================================
 // 4. 콘텐츠 카드 렌더링
 // =========================================================
 function renderScheduleNote(note = "") {
   const match = note.match(/^본문\s*:\s*(.+)$/);
-  if (!match) return `<p>${note}</p>`;
+  if (!match) return `<p>${escapeHtml(note)}</p>`;
 
   const reference = match[1].trim();
-  return `<p><button class="word-reference-link" type="button" data-word-reference="${reference}">본문 : ${reference}</button></p>`;
+  const safeReference = escapeHtml(reference);
+  return `<p><button class="word-reference-link" type="button" data-word-reference="${safeReference}">본문 : ${safeReference}</button></p>`;
 }
 
 function renderSchedule(schedule = []) {
@@ -329,13 +345,13 @@ function renderSchedule(schedule = []) {
           return `
             ${
               hasNewSection
-                ? `<h4 class="schedule-section">${event.section}</h4>`
+                ? `<h4 class="schedule-section">${escapeHtml(event.section)}</h4>`
                 : ""
             }
             <div class="schedule-card">
-              <time>${event.time}</time>
+              <time>${escapeHtml(event.time)}</time>
               <div>
-                <strong>${event.title}</strong>
+                <strong>${escapeHtml(event.title)}</strong>
                 ${event.note ? renderScheduleNote(event.note) : ""}
               </div>
             </div>
@@ -347,7 +363,9 @@ function renderSchedule(schedule = []) {
 }
 
 function renderTags(tags = []) {
-  return tags.map((tag) => `<span class="pill">${tag}</span>`).join("");
+  return tags
+    .map((tag) => `<span class="pill">${escapeHtml(tag)}</span>`)
+    .join("");
 }
 
 function renderEntryContent(item) {
@@ -356,24 +374,26 @@ function renderEntryContent(item) {
   }
 
   if (item.category === "word") {
-    return `<p class="word-body">${item.body}</p>`;
+    return `<p class="word-body">${escapeHtml(item.body)}</p>`;
   }
 
   if (item.image) {
     const imageAlt =
       item.imageAlt ||
-      (item.category === "song" ? `${item.title} 악보` : `${item.title} 이미지`);
+      (item.category === "song"
+        ? `${item.title} 악보`
+        : `${item.title} 이미지`);
 
-    return `<button class="song-image-button" type="button" data-image="${item.image}" data-title="${item.title}"><img class="song-image" src="${item.image}" alt="${imageAlt}" /></button>`;
+    return `<button class="song-image-button" type="button" data-image="${escapeHtml(item.image)}" data-title="${escapeHtml(item.title)}"><img class="song-image" src="${escapeHtml(item.image)}" alt="${escapeHtml(imageAlt)}" /></button>`;
   }
 
-  return `<p>${item.body}</p>`;
+  return `<p>${escapeHtml(item.body)}</p>`;
 }
 
 function renderLyricsButton(item) {
   if (!item.lyrics) return "";
 
-  return `<button class="lyrics-button" type="button" data-lyrics-id="${item.id}" title="${item.title} 가사만 보기" aria-label="${item.title} 가사만 보기">♪</button>`;
+  return `<button class="lyrics-button" type="button" data-lyrics-id="${escapeHtml(item.id)}" title="${escapeHtml(item.title)} 가사만 보기" aria-label="${escapeHtml(item.title)} 가사만 보기">♪</button>`;
 }
 
 function renderZoomIcon(isExpanded) {
@@ -424,10 +444,10 @@ function renderLyricsModeButtons(availableOptions) {
         <button
           class="lyrics-mode-button ${activeLyricsMode === value ? "active" : ""}"
           type="button"
-          data-lyrics-mode="${value}"
+          data-lyrics-mode="${escapeHtml(value)}"
           aria-pressed="${activeLyricsMode === value}"
         >
-          ${label}
+          ${escapeHtml(label)}
         </button>
       `,
     )
@@ -439,7 +459,7 @@ function renderEntry(item) {
     <article class="entry ${item.category === "word" && wordsLarge ? "word-large" : ""}">
       <div>
         <div class="entry-title-row">
-          <h3>${item.title}</h3>
+          <h3>${escapeHtml(item.title)}</h3>
           ${renderLyricsButton(item)}
         </div>
         ${renderEntryContent(item)}
@@ -458,16 +478,14 @@ function renderList() {
     const hasSearchQuery =
       searchableCategories.has(activeCategory) &&
       activeSearchQueries[activeCategory];
-    list.innerHTML =
-      hasSearchQuery
-        ? '<div class="empty-state">검색 결과가 없습니다.</div>'
-        : '<div class="empty-state">등록된 내용이 없습니다.</div>';
+    list.innerHTML = hasSearchQuery
+      ? '<div class="empty-state">검색 결과가 없습니다.</div>'
+      : '<div class="empty-state">등록된 내용이 없습니다.</div>';
     return;
   }
 
   list.innerHTML = items.map(renderEntry).join("");
 }
-
 
 // =========================================================
 // 5. 오늘 일정 계산
@@ -569,14 +587,13 @@ function renderTodayScheduleCard() {
     .map(
       (event) => `
         <div class="today-item ${event.index === todaySchedule.nearestIndex ? "nearest" : ""}">
-          <time>${event.time}</time>
-          <span>${event.title}</span>
+          <time>${escapeHtml(event.time)}</time>
+          <span>${escapeHtml(event.title)}</span>
         </div>
       `,
     )
     .join("");
 }
-
 
 // =========================================================
 // 6. 메모 저장소
@@ -613,7 +630,6 @@ function renderMemoPage() {
   });
 }
 
-
 // =========================================================
 // 7. 가사 페이지
 // =========================================================
@@ -640,7 +656,7 @@ function showLyricsPage() {
     <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}" data-lyrics-view="${activeLyricsMode}">
       <div>
         <div class="lyrics-header">
-          <h3>${song.title}</h3>
+          <h3>${escapeHtml(song.title)}</h3>
           <button
             class="lyrics-size-button ${lyricsLarge ? "active" : ""}"
             type="button"
@@ -677,7 +693,6 @@ function showCategoryPage() {
 
   renderList();
 }
-
 
 // =========================================================
 // 8. 전체 화면 상태 렌더링
@@ -752,7 +767,6 @@ todayToggle.addEventListener("click", () => {
 
 window.addEventListener("hashchange", render);
 
-
 // =========================================================
 // 10. 북마크 / 홈 화면 추가 안내
 // =========================================================
@@ -794,7 +808,6 @@ installSheet.addEventListener("click", (event) => {
     hideBookmarkGuide();
   }
 });
-
 
 // =========================================================
 // 11. 이미지 확대 보기
@@ -860,9 +873,8 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-
 // =========================================================
-// 12. 모바일 브라우저 확대 방지
+// 12. 모바일 브라우저 확대 및 당겨 새로고침 방지
 // =========================================================
 function preventBrowserDoubleTapZoom() {
   let lastTouchEndAt = 0;
@@ -890,8 +902,62 @@ function preventBrowserDoubleTapZoom() {
   );
 }
 
-preventBrowserDoubleTapZoom();
+function preventPullToRefresh() {
+  let startY = 0;
 
+  function canScrollInsideTarget(target, deltaY) {
+    let element = target instanceof Element ? target : target?.parentElement;
+
+    while (element && element !== document.body) {
+      const style = window.getComputedStyle(element);
+      const canScrollY = /(auto|scroll)/.test(style.overflowY);
+      const hasScrollableContent = element.scrollHeight > element.clientHeight;
+
+      if (canScrollY && hasScrollableContent) {
+        const canScrollUp = element.scrollTop > 0;
+        const canScrollDown =
+          element.scrollTop + element.clientHeight < element.scrollHeight;
+
+        if ((deltaY > 0 && canScrollUp) || (deltaY < 0 && canScrollDown)) {
+          return true;
+        }
+      }
+
+      element = element.parentElement;
+    }
+
+    return false;
+  }
+
+  document.addEventListener(
+    "touchstart",
+    (event) => {
+      startY = event.touches[0]?.clientY || 0;
+    },
+    { passive: true },
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      const currentY = event.touches[0]?.clientY || 0;
+      const deltaY = currentY - startY;
+      const isPullingDown = deltaY > 0;
+
+      if (
+        window.scrollY <= 0 &&
+        isPullingDown &&
+        !canScrollInsideTarget(event.target, deltaY)
+      ) {
+        event.preventDefault();
+      }
+    },
+    { passive: false },
+  );
+}
+
+preventBrowserDoubleTapZoom();
+preventPullToRefresh();
 
 // =========================================================
 // 13. PWA 서비스워커 등록
@@ -903,7 +969,6 @@ if ("serviceWorker" in navigator) {
     });
   });
 }
-
 
 // =========================================================
 // 14. 로컬 개발용 자동 새로고침

@@ -18,6 +18,7 @@ const checkFiles = [
   "server.js",
   "sw.js",
   "scripts/publish.js",
+  "scripts/check-song-assets.js",
 ];
 
 // 외부 명령을 실행하고 출력은 터미널에 그대로 표시합니다.
@@ -70,6 +71,7 @@ if (!status) {
 checkFiles.forEach((file) => {
   run(process.execPath, ["--check", file]);
 });
+run(process.execPath, ["scripts/check-song-assets.js"]);
 run("git", [...gitBaseArgs, "add", "."]);
 run("git", [...gitBaseArgs, "commit", "-m", message]);
 run("git", [...gitBaseArgs, "push", "origin", "main"]);

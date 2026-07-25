@@ -94,13 +94,13 @@ export const scheduleItems = [
         section: "문화교류 일정",
         time: "16:00",
         title: "여는 예배",
-        note: "- 찬양 ( 꽃들도, 더 원합니다 )\n- 간증 : 김준서",
+        note: "오프닝 \n1. 찬양 ( 꽃들도, 더 원합니다 )\n2. 간증 : 김준서",
       },
       {
         section: "문화교류 일정",
         time: "16:30",
         title: "문화교류 시작",
-        note: "- K-pop 댄스(같이 춤 추고 배우며 릴스 찍기)\n- 노래\n- 레크레이션",
+        note: "1. K-pop 댄스\n2. 레크레이션\n3. 노래",
       },
       {
         section: "문화교류 일정",
