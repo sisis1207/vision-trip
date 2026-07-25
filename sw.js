@@ -2,7 +2,7 @@
 // 앱 실행에 필요한 정적 파일을 캐시하여 오프라인에서도 사용할 수 있게 합니다.
 // cacheVersion은 scripts/publish.js에서 배포 시 자동으로 갱신됩니다.
 
-const cacheVersion = "v2026071601";
+const cacheVersion = "v2026072601";
 const cacheName = `vision-trip-pwa-${cacheVersion}`;
 // 오프라인 사용에 필요한 핵심 파일 목록입니다.
 const assets = [
@@ -27,6 +27,7 @@ const assets = [
   "./assets/songs/more.png",
   "./assets/songs/as the waters cover the sea.png",
   "./assets/songs/just as i am.png",
+  "./assets/songs/my soul is secure in you.jpg",
   "./assets/songs/oh holy spirit teach us.png",
 ];
 

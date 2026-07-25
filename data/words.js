@@ -310,6 +310,16 @@ const words = [
     title: "시편 62편 5절",
     body: "나의 영혼아 잠잠히 하나님만 바라라 무릇 나의 소망이 그로부터 나오는도다",
   },
+  {
+    id: "message-38",
+    title: "마태복음 12장 18절",
+    body: "보라, 내가 택한 나의 종 내 사랑하는 사람, 내 마음에 드는 사람, 그에게 내 성령을 부어 주리니 그가 이방인들에게 정의를 선포하리라.",
+  },
+  {
+    id: "message-39",
+    title: "마태복음 12장 19절",
+    body: "그는 다투지도 않고 큰 소리도 내지 않으리니 거리에서 그의 소리를 들을 자 없으리라.",
+  },
 ].map(createWordItem);
 
 export const wordItems = [...words].sort(compareBibleReferences);

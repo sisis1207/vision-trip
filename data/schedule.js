@@ -144,7 +144,7 @@ export const scheduleItems = [
       { time: "18:30", title: "숙소 복귀" },
       { time: "19:00", title: "저녁 식사" },
       { time: "20:00", title: "비전트립 나눔" },
-      { time: "21:00", title: "정리 예배" },
+      { time: "21:00", title: "정리 예배", note: "본문 : 시편 62편 5절" },
     ],
     tags: ["일정"],
   },
