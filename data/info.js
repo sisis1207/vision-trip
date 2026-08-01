@@ -61,7 +61,7 @@ export const infoItems = [
     category: "info",
     infoGroup: "street-evangelism",
     title: "[ 3조 ]",
-    body: "김영창, 강호선, 윤예전",
+    body: "김영창, 강호선, 윤예준",
   },
   {
     id: "info-7",

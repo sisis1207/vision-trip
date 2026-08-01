@@ -74,7 +74,7 @@ export const scheduleItems = [
     // 3일차
     id: "day-3",
     category: "schedule",
-    title: "DAY 3 — 2026.08.13 (목) 문화교류",
+    title: "DAY 3 — 2026.08.13 (목) 문화교류회",
     date: "2026-08-13",
     schedule: [
       {
@@ -98,20 +98,19 @@ export const scheduleItems = [
       {
         section: "문화교류 일정",
         time: "16:00",
-        title: "여는 예배",
-        note: "오프닝 \n1. 찬양 ( 꽃들도, 더 원합니다 )\n2. 간증 : 김준서",
+        title: "접수",
       },
       {
         section: "문화교류 일정",
         time: "16:30",
-        title: "문화교류 시작",
-        note: "1. K-pop 댄스\n2. 레크레이션\n3. 노래",
+        title: "문화교류회 시작",
+        note: "오프닝 \n1. 찬양 ( 꽃들도, 더 원합니다 )\n2. 간증 : 김준서\n3. K-pop 댄스\n4. 레크레이션\n5. 노래",
       },
       {
         section: "문화교류 일정",
         time: "18:00",
-        title: "k-푸드 시식회",
-        note: "저녁식사",
+        title: "k-푸드 체험",
+        note: "김밥, 불고기, 잡채, 떡볶이",
       },
       {
         section: "문화교류 일정",
@@ -175,9 +174,19 @@ export const scheduleItems = [
         time: "10:30",
         title: "삿포로 치토세공항 도착 및 간단한 점심",
       },
-      { section: "1팀 6명", time: "12:55", title: "일본 출국(1팀)" },
+      {
+        section: "1팀 6명",
+        time: "12:55",
+        title: "일본 출국(1팀)",
+        note: "이스타항공 ZE626",
+      },
       { section: "1팀 6명", time: "16:00", title: "인천국제공항 도착" },
-      { section: "2팀 5명", time: "14:30", title: "일본 출국(2팀)" },
+      {
+        section: "2팀 5명",
+        time: "14:30",
+        title: "일본 출국(2팀)",
+        note: "티웨이항공 TW264",
+      },
       { section: "2팀 5명", time: "17:40", title: "인천국제공항 도착" },
     ],
     tags: ["일정"],

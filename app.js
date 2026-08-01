@@ -201,12 +201,11 @@ function filterItems() {
     return schedule ? [schedule] : [];
   }
 
-  const items = itemsByCategory.get(activeCategory) || [];
-
   if (activeCategory === "info") {
     return getInfoItems().filter((item) => item.infoGroup === activeInfoGroup);
   }
 
+  const items = itemsByCategory.get(activeCategory) || [];
   const activeSearchQuery = searchableCategories.has(activeCategory)
     ? activeSearchQueries[activeCategory]
     : "";
@@ -275,10 +274,7 @@ function updateInfoTabs() {
 }
 
 function updateListLayoutClass() {
-  list.classList.toggle(
-    "info-compact-grid",
-    isStreetEvangelismInfoActive(),
-  );
+  list.classList.toggle("info-compact-grid", isStreetEvangelismInfoActive());
 }
 
 function scrollInfoContentIntoView() {
@@ -746,7 +742,6 @@ function showCategoryPage() {
   updateScheduleTabs();
   updateSearchControl();
   updateWordSizeToggle();
-  updateListLayoutClass();
 
   if (activeCategory === "memo") {
     renderMemoPage();
