@@ -56,6 +56,7 @@ const searchPlaceholders = {
   song: "찬양 검색",
   word: "말씀 검색",
 };
+const infoGroups = new Set(["immigration", "street-evangelism", "vision-trip"]);
 const urlParams = new URLSearchParams(window.location.search);
 const homeHero = document.querySelector("#homeHero");
 const todayScheduleCard = document.querySelector("#todayScheduleCard");
@@ -70,6 +71,9 @@ const wordSizeToggle = document.querySelector("#wordSizeToggle");
 const backButton = document.querySelector("#backButton");
 const list = document.querySelector("#contentList");
 const tabs = document.querySelectorAll(".tab");
+const infoSummaryList = document.querySelector("#infoSummaryList");
+const infoTabs = document.querySelector("#infoTabs");
+const infoGroupButtons = document.querySelectorAll(".info-tab");
 const scheduleTabs = document.querySelector("#scheduleTabs");
 const scheduleDayButtons = document.querySelectorAll(".schedule-tab");
 const wordSearch = document.querySelector("#wordSearch");
@@ -84,6 +88,7 @@ const viewerImage = document.querySelector("#viewerImage");
 const closeImageViewer = document.querySelector("#closeImageViewer");
 
 let activeCategory = null;
+let activeInfoGroup = "immigration";
 let activeScheduleDay = "day-1";
 let activeLyricsSongId = null;
 const activeSearchQueries = {
@@ -171,6 +176,8 @@ function showContentShell() {
   categoryTabs.hidden = true;
   pageHeader.hidden = false;
   todayScheduleCard.hidden = true;
+  infoSummaryList.hidden = true;
+  list.classList.remove("info-compact-grid");
   list.hidden = false;
 }
 
@@ -179,6 +186,8 @@ function showHome() {
   homeHero.hidden = false;
   categoryTabs.hidden = false;
   pageHeader.hidden = true;
+  infoSummaryList.hidden = true;
+  infoTabs.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
@@ -193,6 +202,10 @@ function filterItems() {
   }
 
   const items = itemsByCategory.get(activeCategory) || [];
+
+  if (activeCategory === "info") {
+    return getInfoItems().filter((item) => item.infoGroup === activeInfoGroup);
+  }
 
   const activeSearchQuery = searchableCategories.has(activeCategory)
     ? activeSearchQueries[activeCategory]
@@ -228,10 +241,54 @@ function getLyricsSong() {
   return item?.category === "song" ? item : null;
 }
 
+function getInfoItems() {
+  return itemsByCategory.get("info") || [];
+}
+
+function isStreetEvangelismInfoActive() {
+  return activeCategory === "info" && activeInfoGroup === "street-evangelism";
+}
+
 function updateScheduleTabs() {
   scheduleTabs.hidden = activeCategory !== "schedule";
   scheduleDayButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.day === activeScheduleDay);
+  });
+}
+
+function updateInfoTabs() {
+  infoTabs.hidden = activeCategory !== "info";
+  infoSummaryList.hidden = activeCategory !== "info";
+
+  if (activeCategory === "info") {
+    const summaryItems = getInfoItems().filter((item) => !item.infoGroup);
+    infoSummaryList.hidden = summaryItems.length === 0;
+    infoSummaryList.innerHTML = summaryItems.map(renderEntry).join("");
+  }
+
+  infoGroupButtons.forEach((button) => {
+    button.classList.toggle(
+      "active",
+      button.dataset.infoGroup === activeInfoGroup,
+    );
+  });
+}
+
+function updateListLayoutClass() {
+  list.classList.toggle(
+    "info-compact-grid",
+    isStreetEvangelismInfoActive(),
+  );
+}
+
+function scrollInfoContentIntoView() {
+  if (activeCategory !== "info") return;
+
+  requestAnimationFrame(() => {
+    list.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 }
 
@@ -387,7 +444,7 @@ function renderEntryContent(item) {
     return `<button class="song-image-button" type="button" data-image="${escapeHtml(item.image)}" data-title="${escapeHtml(item.title)}"><img class="song-image" src="${escapeHtml(item.image)}" alt="${escapeHtml(imageAlt)}" /></button>`;
   }
 
-  return `<p>${escapeHtml(item.body)}</p>`;
+  return `<p class="entry-body">${escapeHtml(item.body)}</p>`;
 }
 
 function renderLyricsButton(item) {
@@ -472,6 +529,7 @@ function renderEntry(item) {
 }
 
 function renderList() {
+  updateListLayoutClass();
   const items = filterItems();
 
   if (!items.length) {
@@ -647,6 +705,8 @@ function showLyricsPage() {
   }
 
   showContentShell();
+  infoSummaryList.hidden = true;
+  infoTabs.hidden = true;
   scheduleTabs.hidden = true;
   wordSearch.hidden = true;
   pageTitle.textContent = `${song.title} 가사`;
@@ -682,9 +742,11 @@ function showCategoryPage() {
   tabs.forEach((tab) =>
     tab.classList.toggle("active", tab.dataset.category === activeCategory),
   );
+  updateInfoTabs();
   updateScheduleTabs();
   updateSearchControl();
   updateWordSizeToggle();
+  updateListLayoutClass();
 
   if (activeCategory === "memo") {
     renderMemoPage();
@@ -745,6 +807,19 @@ scheduleTabs.addEventListener("click", (event) => {
 
   activeScheduleDay = button.dataset.day;
   render();
+});
+
+infoTabs.addEventListener("click", (event) => {
+  const button = event.target.closest?.("[data-info-group]");
+  if (!button || !infoTabs.contains(button)) return;
+
+  const nextInfoGroup = button.dataset.infoGroup;
+  if (!infoGroups.has(nextInfoGroup)) return;
+
+  activeInfoGroup = nextInfoGroup;
+  updateInfoTabs();
+  renderList();
+  scrollInfoContentIntoView();
 });
 
 wordSearchInput.addEventListener("input", () => {

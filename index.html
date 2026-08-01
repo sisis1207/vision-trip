@@ -238,6 +238,31 @@
           />
         </section>
 
+        <!-- 안내 공통 정보: 세부 카테고리와 관계없이 안내 화면 상단에 표시 -->
+        <section
+          class="content-list info-summary-list"
+          id="infoSummaryList"
+          hidden
+        ></section>
+
+        <!-- 안내 세부 카테고리 선택 탭: 안내 카테고리에서만 app.js가 표시 -->
+        <nav
+          class="info-tabs"
+          id="infoTabs"
+          aria-label="안내 세부 카테고리"
+          hidden
+        >
+          <button class="info-tab active" type="button" data-info-group="immigration">
+            출입국
+          </button>
+          <button class="info-tab" type="button" data-info-group="street-evangelism">
+            노방전도
+          </button>
+          <button class="info-tab" type="button" data-info-group="vision-trip">
+            비전트립
+          </button>
+        </nav>
+
         <!-- 일정 일차 선택 탭: 일정 카테고리에서만 app.js가 표시 -->
         <nav
           class="schedule-tabs"

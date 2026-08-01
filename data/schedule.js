@@ -45,7 +45,11 @@ export const scheduleItems = [
     title: "DAY 2 — 2026.08.12 (수) 노방전도(훗카이도국립대학)",
     date: "2026-08-12",
     schedule: [
-      { time: "08:00", title: "기상 및 아침 식사" },
+      {
+        time: "08:00",
+        title: "기상 및 아침 식사",
+        note: "아침 당번 : 김영창, 박정원, 오윤지 ",
+      },
       {
         time: "09:30",
         title: "오전 예배 및 조 나누기",
@@ -77,6 +81,7 @@ export const scheduleItems = [
         section: "문화교류 일정",
         time: "08:00",
         title: "기상 및 아침 식사",
+        note: "아침 당번 : 이재영, 이후성, 윤예준",
       },
       {
         section: "문화교류 일정",
@@ -86,7 +91,7 @@ export const scheduleItems = [
       },
       {
         section: "문화교류 일정",
-        time: "~ 12:30",
+        time: "~ 15:30",
         title: "휴식 및 이동",
         note: "장보기, 필요 물품 구매, 리허설, 재료손질등 ",
       },
@@ -129,7 +134,11 @@ export const scheduleItems = [
     title: "DAY 4 — 2026.08.14 (금) 비전트립",
     date: "2026-08-14",
     schedule: [
-      { time: "08:00", title: "기상 및 아침 식사" },
+      {
+        time: "08:00",
+        title: "기상 및 아침 식사",
+        note: "아침 당번 : 강호선, 김나연, 김준서",
+      },
       {
         time: "08:30",
         title: "아침 예배",
@@ -137,7 +146,7 @@ export const scheduleItems = [
       },
       { time: "09:00", title: "조별 모임" },
       {
-        time: "09:30",
+        time: "09:10 ~ 18:30",
         title: "비전트립",
         note: "점심 식사 / 여행 / 기념품 구매",
       },
@@ -155,9 +164,17 @@ export const scheduleItems = [
     title: "DAY 5 — 2026.08.15 (토) 귀국",
     date: "2026-08-15",
     schedule: [
-      { time: "08:00", title: "기상 및 아침 식사" },
+      {
+        time: "08:00",
+        title: "기상 및 아침 식사",
+        note: "아침 당번 : 김영욱, 김자영, 노주아",
+      },
       { time: "09:00", title: "마무리 예배 및 공항 출발" },
-      { time: "10:30", title: "삿포로 치토세공항 도착 및 간단한 점심" },
+      {
+        section: "1팀 6명",
+        time: "10:30",
+        title: "삿포로 치토세공항 도착 및 간단한 점심",
+      },
       { section: "1팀 6명", time: "12:55", title: "일본 출국(1팀)" },
       { section: "1팀 6명", time: "16:00", title: "인천국제공항 도착" },
       { section: "2팀 5명", time: "14:30", title: "일본 출국(2팀)" },

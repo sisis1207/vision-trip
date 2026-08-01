@@ -65,6 +65,7 @@ select,
 .icon-button,
 .back-button,
 .tab,
+.info-tab,
 .schedule-tab,
 .today-toggle,
 .lyrics-mode-button,
@@ -598,11 +599,20 @@ h1 {
 }
 
 .tab,
+.info-tab,
 .schedule-tab {
   font-size: 0.9rem;
   font-weight: 700;
 }
 
+.info-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.info-tab,
 .schedule-tab {
   min-height: 40px;
   padding: 0 10px;
@@ -613,6 +623,7 @@ h1 {
 }
 
 .tab.active,
+.info-tab.active,
 .schedule-tab.active {
   border-color: var(--accent);
   color: #fff;
@@ -625,6 +636,15 @@ h1 {
 .content-list {
   display: grid;
   gap: 12px;
+}
+
+.content-list.info-compact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.info-summary-list {
+  margin-bottom: 18px;
 }
 
 /* 공통 콘텐츠 카드 */
@@ -658,6 +678,29 @@ h1 {
   margin-bottom: 12px;
   color: var(--muted);
   line-height: 1.55;
+}
+
+.entry-body {
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.info-compact-grid .entry {
+  min-width: 0;
+  padding: 14px;
+}
+
+.info-compact-grid .entry h3 {
+  font-size: 0.98rem;
+}
+
+.info-compact-grid .entry-body {
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.info-compact-grid .empty-state {
+  grid-column: 1 / -1;
 }
 
 .word-body {
@@ -817,6 +860,7 @@ h1 {
   }
 
   .tab:hover,
+  .info-tab:hover,
   .schedule-tab:hover {
     background: rgba(37, 82, 74, 0.08);
     border-color: rgba(37, 82, 74, 0.3);
@@ -1105,6 +1149,10 @@ h1 {
   .schedule-tabs {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+
+  .info-tabs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 /* 태블릿 반응형 */
@@ -1156,6 +1204,11 @@ h1 {
     gap: 10px;
   }
 
+  .info-tabs {
+    gap: 10px;
+  }
+
+  .info-tab,
   .schedule-tab {
     min-height: 44px;
     font-size: 0.94rem;
@@ -1248,6 +1301,10 @@ h1 {
   }
 
   .schedule-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .info-tabs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
