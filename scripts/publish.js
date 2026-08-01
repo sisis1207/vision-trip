@@ -5,22 +5,6 @@ const { execFileSync } = require("node:child_process");
 const { readFileSync, writeFileSync } = require("node:fs");
 const { join } = require("node:path");
 
-// 배포 전에 문법 검사를 수행할 JavaScript 파일 목록입니다.
-const checkFiles = [
-  "app.js",
-  "data.js",
-  "data/index.js",
-  "data/info.js",
-  "data/schedule.js",
-  "data/songs.js",
-  "data/words.js",
-  "data/hanmom.js",
-  "server.js",
-  "sw.js",
-  "scripts/publish.js",
-  "scripts/check-song-assets.js",
-];
-
 // 외부 명령을 실행하고 출력은 터미널에 그대로 표시합니다.
 function run(command, args, options = {}) {
   execFileSync(command, args, {
@@ -59,7 +43,7 @@ function updateServiceWorkerCacheVersion() {
 const message = process.argv.slice(2).join(" ").trim() || "Update vision trip app";
 const gitBaseArgs = ["-c", `safe.directory=${process.cwd().replaceAll("\\", "/")}`];
 
-updateServiceWorkerCacheVersion();
+run(process.execPath, ["scripts/check.js"]);
 
 const status = read("git", [...gitBaseArgs, "status", "--porcelain"]);
 
@@ -68,10 +52,8 @@ if (!status) {
   process.exit(0);
 }
 
-checkFiles.forEach((file) => {
-  run(process.execPath, ["--check", file]);
-});
-run(process.execPath, ["scripts/check-song-assets.js"]);
+updateServiceWorkerCacheVersion();
+
 run("git", [...gitBaseArgs, "add", "."]);
 run("git", [...gitBaseArgs, "commit", "-m", message]);
 run("git", [...gitBaseArgs, "push", "origin", "main"]);

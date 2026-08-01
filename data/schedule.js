@@ -52,7 +52,7 @@ export const scheduleItems = [
       },
       {
         time: "09:30",
-        title: "오전 예배 및 조 나누기",
+        title: "오전 예배",
         note: "본문 : 누가복음 13장 31~35절",
       },
       {
@@ -78,13 +78,11 @@ export const scheduleItems = [
     date: "2026-08-13",
     schedule: [
       {
-        section: "문화교류 일정",
         time: "08:00",
         title: "기상 및 아침 식사",
         note: "아침 당번 : 이재영, 이후성, 윤예준",
       },
       {
-        section: "문화교류 일정",
         time: "09:00 ~ 10:00",
         title: "일본 선교 부흥예배",
         note: "본문 : 마가복음 2장 1~12절",
@@ -147,7 +145,6 @@ export const scheduleItems = [
       {
         time: "09:10 ~ 18:30",
         title: "비전트립",
-        note: "점심 식사 / 여행 / 기념품 구매",
       },
       { time: "18:30", title: "숙소 복귀" },
       { time: "19:00", title: "저녁 식사" },
