@@ -68,6 +68,7 @@ const categoryTabs = document.querySelector("#categoryTabs");
 const pageHeader = document.querySelector("#pageHeader");
 const pageTitle = document.querySelector("#pageTitle");
 const wordSizeToggle = document.querySelector("#wordSizeToggle");
+const categoryStartButton = document.querySelector("#categoryStartButton");
 const backButton = document.querySelector("#backButton");
 const list = document.querySelector("#contentList");
 const tabs = document.querySelectorAll(".tab");
@@ -186,6 +187,7 @@ function showHome() {
   homeHero.hidden = false;
   categoryTabs.hidden = false;
   pageHeader.hidden = true;
+  categoryStartButton.hidden = true;
   infoSummaryList.hidden = true;
   infoTabs.hidden = true;
   scheduleTabs.hidden = true;
@@ -313,6 +315,14 @@ function updateWordSizeToggle() {
     wordsLarge ? "말씀 기본 크기로 보기" : "말씀 크게 보기",
   );
   wordSizeToggle.innerHTML = renderZoomIcon(wordsLarge);
+}
+
+function updateCategoryStartButton() {
+  categoryStartButton.hidden = activeCategory !== "word";
+}
+
+function scrollToPageTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // "누가복음 13장 31~35절" 같은 범위 검색을 개별 절 카드와 연결합니다.
@@ -707,6 +717,7 @@ function showLyricsPage() {
   wordSearch.hidden = true;
   pageTitle.textContent = `${song.title} 가사`;
   wordSizeToggle.hidden = true;
+  categoryStartButton.hidden = false;
   tabs.forEach((tab) => tab.classList.remove("active"));
   list.innerHTML = `
     <article class="entry lyrics-entry ${lyricsLarge ? "large" : ""}" data-lyrics-view="${activeLyricsMode}">
@@ -742,6 +753,7 @@ function showCategoryPage() {
   updateScheduleTabs();
   updateSearchControl();
   updateWordSizeToggle();
+  updateCategoryStartButton();
 
   if (activeCategory === "memo") {
     renderMemoPage();
@@ -828,6 +840,23 @@ wordSizeToggle.addEventListener("click", () => {
   wordsLarge = !wordsLarge;
   updateWordSizeToggle();
   renderList();
+});
+
+categoryStartButton.addEventListener("click", () => {
+  if (activeLyricsSongId) {
+    activeSearchQueries.song = "";
+    openCategory("song");
+    scrollToPageTop();
+    return;
+  }
+
+  if (searchableCategories.has(activeCategory)) {
+    activeSearchQueries[activeCategory] = "";
+    updateSearchControl();
+    renderList();
+  }
+
+  scrollToPageTop();
 });
 
 todayToggle.addEventListener("click", () => {

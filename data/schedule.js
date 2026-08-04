@@ -1,6 +1,11 @@
 // 일정 화면과 오늘 일정 카드에서 사용하는 일정 데이터입니다.
 // id는 day-1 형식을 유지하고, date는 YYYY-MM-DD 형식으로 입력하세요.
 
+const sleepPrepEvent = {
+  time: "마무리",
+  title: "온천 및 취침 준비",
+};
+
 export const scheduleItems = [
   {
     // 1일차
@@ -15,7 +20,12 @@ export const scheduleItems = [
         title: "이촌동교회 집합 및 이동 시작",
       },
       { section: "아침 일정", time: "05:00", title: "인천국제공항 도착" },
-      { section: "아침 일정", time: "07:10", title: "비행기 탑승" },
+      {
+        section: "아침 일정",
+        time: "07:10",
+        title: "비행기 탑승",
+        note: "제주항공 7C1501",
+      },
       { section: "아침 일정", time: "10:00", title: "삿포로 치토세공항 도착" },
       { section: "아침 일정", time: "11:00", title: "렌트 및 이동 / 점심식사" },
       {
@@ -35,6 +45,7 @@ export const scheduleItems = [
         title: "저녁 예배",
         note: "선교사님 특강",
       },
+      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -42,7 +53,7 @@ export const scheduleItems = [
     // 2일차
     id: "day-2",
     category: "schedule",
-    title: "DAY 2 — 2026.08.12 (수) 노방전도(훗카이도국립대학)",
+    title: "DAY 2 — 2026.08.12 (수) 노방전도",
     date: "2026-08-12",
     schedule: [
       {
@@ -60,13 +71,18 @@ export const scheduleItems = [
         title: "노방전도 준비 및 이동",
       },
       { time: "12:00 ~ 13:00", title: "점심 식사" },
-      { time: "13:00 ~ 18:00", title: "노방전도", note: "훗카이도국립대학" },
+      {
+        time: "13:00 ~ 18:00",
+        title: "노방전도",
+        note: "훗카이도국립대학, 오도리공원",
+      },
       { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
       {
         time: "21:30 ~ 22:30",
         title: "저녁 집회",
         note: "본문 : 요한복음 10장 27절",
       },
+      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -121,6 +137,7 @@ export const scheduleItems = [
         title: "저녁 예배",
         note: "본문 : 시편 62편 5절",
       },
+      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -150,6 +167,7 @@ export const scheduleItems = [
       { time: "19:00", title: "저녁 식사" },
       { time: "20:00", title: "비전트립 나눔" },
       { time: "21:00", title: "정리 예배", note: "본문 : 시편 62편 5절" },
+      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
