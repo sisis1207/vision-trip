@@ -1,7 +1,11 @@
 // 비전트립 앱의 메인 스크립트입니다.
 // 화면 전환, 데이터 렌더링, 메모 저장, 이미지 확대, PWA 등록을 담당합니다.
 
-import { categoryLabels, handbookItems } from "./data/index.js";
+import {
+  applyPrivateItemOverrides,
+  categoryLabels,
+  handbookItems,
+} from "./data/index.js";
 
 // =========================================================
 // 1. 데이터 및 DOM 참조
@@ -14,44 +18,56 @@ const handbookItemsById = new Map();
 const searchableTextById = new Map();
 const bibleReferenceById = new Map();
 const koreaWeekdays = ["일", "월", "화", "수", "목", "금", "토"];
+let todaySchedulesByDate = new Map();
 
 // 앱 시작 시 한 번의 순회로 화면, 검색, 일정용 색인을 함께 만듭니다.
-for (const item of handbookItems) {
-  const items = itemsByCategory.get(item.category) || [];
-  items.push(item);
-  itemsByCategory.set(item.category, items);
-  handbookItemsById.set(item.id, item);
+function rebuildDataIndexes(items) {
+  scheduleItems.length = 0;
+  itemsByCategory.clear();
+  handbookItemsById.clear();
+  searchableTextById.clear();
+  bibleReferenceById.clear();
 
-  if (item.category === "schedule") {
-    scheduleItems.push(item);
+  for (const item of items) {
+    const categoryItems = itemsByCategory.get(item.category) || [];
+    categoryItems.push(item);
+    itemsByCategory.set(item.category, categoryItems);
+    handbookItemsById.set(item.id, item);
+
+    if (item.category === "schedule") {
+      scheduleItems.push(item);
+    }
+
+    if (searchableCategories.has(item.category)) {
+      searchableTextById.set(item.id, getSearchText(item));
+    }
+
+    if (item.category === "word") {
+      bibleReferenceById.set(item.id, parseBibleReference(item.title));
+    }
   }
 
-  if (searchableCategories.has(item.category)) {
-    searchableTextById.set(item.id, getSearchText(item));
-  }
+  todaySchedulesByDate = new Map(
+    scheduleItems.map((day) => {
+      const events = day.schedule.map((event, index) => ({
+        ...event,
+        index,
+        minutes: parseScheduleMinutes(event.time),
+      }));
 
-  if (item.category === "word") {
-    bibleReferenceById.set(item.id, parseBibleReference(item.title));
-  }
+      return [
+        day.date,
+        {
+          dateLabel: formatKoreaDateLabel(day.date),
+          dayLabel: day.id.replace("day-", "DAY "),
+          events,
+        },
+      ];
+    }),
+  );
 }
-const todaySchedulesByDate = new Map(
-  scheduleItems.map((day) => {
-    const events = day.schedule.map((event, index) => ({
-      ...event,
-      index,
-      minutes: parseScheduleMinutes(event.time),
-    }));
 
-    return [
-      day.date,
-      {
-        dateLabel: formatKoreaDateLabel(day.date),
-        dayLabel: day.id.replace("day-", "DAY "),
-        events,
-      },
-    ];
-  }),
-);
+rebuildDataIndexes(handbookItems);
 const searchPlaceholders = {
   song: "찬양 검색",
   word: "말씀 검색",
@@ -106,6 +122,11 @@ const lyricsModeOptions = [
   { value: "ja-original", label: "일본어" },
   { value: "pronunciation", label: "발음" },
 ];
+const lyricsModeClassByValue = {
+  ko: "lyric-ko",
+  "ja-original": "lyric-ja-original",
+  pronunciation: "lyric-ja",
+};
 const lyricsModeValues = new Set(lyricsModeOptions.map(({ value }) => value));
 const lyricsModeOptionsBySongId = new Map();
 const publicAppUrl = "https://sisis1207.github.io/vision-trip/";
@@ -483,17 +504,20 @@ function getLyricsModeOptions(song) {
   const cachedOptions = lyricsModeOptionsBySongId.get(song.id);
   if (cachedOptions) return cachedOptions;
 
-  const hasKo = hasLyricClass(song, "lyric-ko");
-  const hasJaOriginal = hasLyricClass(song, "lyric-ja-original");
-  const hasPronunciation = hasLyricClass(song, "lyric-ja");
-  const hasMultipleLanguages = hasJaOriginal || hasPronunciation;
+  const availableLyricsByMode = Object.fromEntries(
+    Object.entries(lyricsModeClassByValue).map(([value, className]) => [
+      value,
+      hasLyricClass(song, className),
+    ]),
+  );
+  const hasMultipleLanguages =
+    availableLyricsByMode["ja-original"] ||
+    availableLyricsByMode.pronunciation;
 
   const availableOptions = lyricsModeOptions.filter(({ value }) => {
     if (value === "all") return true;
-    if (value === "ko") return hasKo && hasMultipleLanguages;
-    if (value === "ja-original") return hasJaOriginal;
-    if (value === "pronunciation") return hasPronunciation;
-    return false;
+    if (value === "ko") return availableLyricsByMode.ko && hasMultipleLanguages;
+    return Boolean(availableLyricsByMode[value]);
   });
 
   lyricsModeOptionsBySongId.set(song.id, availableOptions);
@@ -782,6 +806,23 @@ function render() {
   }
 
   showCategoryPage();
+}
+
+async function loadPrivateLocalData() {
+  if (!isLocalPreviewHost()) return;
+
+  try {
+    const { privateItemOverrides = [] } = await import("./data/private.local.js");
+    if (!privateItemOverrides.length) return;
+
+    lyricsModeOptionsBySongId.clear();
+    rebuildDataIndexes(
+      applyPrivateItemOverrides(handbookItems, privateItemOverrides),
+    );
+    render();
+  } catch {
+    // data/private.local.js is optional and intentionally ignored by Git.
+  }
 }
 
 // =========================================================
@@ -1080,3 +1121,4 @@ if ("EventSource" in window && isLocalPreviewHost()) {
 }
 
 render();
+loadPrivateLocalData();

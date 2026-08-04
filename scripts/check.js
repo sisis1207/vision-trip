@@ -7,6 +7,7 @@ const syntaxCheckFiles = [
   "data.js",
   "data/index.js",
   "data/info.js",
+  "data/private.example.js",
   "data/schedule.js",
   "data/songs.js",
   "data/words.js",

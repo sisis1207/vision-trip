@@ -16,6 +16,24 @@ export const handbookItems = [
   ...hanmomItems,
 ];
 
+// data/private.local.js에서 같은 id의 항목을 덮어쓸 때 사용합니다.
+// local 파일은 .gitignore에 포함되어 개인정보를 Git에 올리지 않습니다.
+export function applyPrivateItemOverrides(items, overrides = []) {
+  const overridesById = new Map(
+    overrides
+      .filter((item) => item?.id)
+      .map((item) => [item.id, item]),
+  );
+
+  return items.map((item) => {
+    const override = overridesById.get(item.id);
+    if (!override) return item;
+
+    const { id, category, ...localFields } = override;
+    return { ...item, ...localFields };
+  });
+}
+
 // 카테고리 코드와 화면 표시 이름을 연결합니다.
 export const categoryLabels = {
   info: "안내",

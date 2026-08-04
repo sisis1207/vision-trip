@@ -1325,7 +1325,9 @@ h1 {
   .entry,
   .today-card,
   .schedule-card {
+    backface-visibility: hidden;
     box-shadow: 0 16px 38px rgba(21, 59, 54, 0.11);
+    transform-origin: center top;
     animation: ipad-soft-rise 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
@@ -1343,6 +1345,8 @@ h1 {
   .info-tab,
   .schedule-tab {
     box-shadow: 0 7px 18px rgba(21, 59, 54, 0.09);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .tab:active,
