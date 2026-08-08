@@ -43,7 +43,6 @@ export const songItems = [
 <span class="lyric-ko">은혜의 주 은혜의 주 은혜의 주</span>
 <span class="lyric-ja-original">恵みを恵みを恵みを</span>
 <span class="lyric-ja">메구미오 메구미오 메구미오</span>`,
-    tags: ["찬양"],
   },
 
   /*더 원합니다(慕い求めます)*/
@@ -69,7 +68,6 @@ export const songItems = [
 <span class="lyric-ja-original">みそばに引き寄せて主よ慕い求めます</span>
 <span class="lyric-ja">미소바니 히키요세테 슈요 시타이 모토메마스</span>
 `,
-    tags: ["찬양"],
   },
   /*주님이 주신 땅으로*/
   {
@@ -84,7 +82,6 @@ export const songItems = [
     <span class='lyric-ko'>주님이 주시는 담대함으로 큰 소리 외치며 나아가네</span>
     <span class='lyric-ko'>이 산지를 내게 주소서 그날에 주께서 말씀하신</span>
     <span class='lyric-ko'>이제 내가 주님의 이름으로 그 땅을 취하리니</span>`,
-    tags: ["찬양"],
   },
   {
     id: "song-4",
@@ -99,7 +96,6 @@ export const songItems = [
 주의 임재 안에 거하는 것</span>
 <span class='lyric-ko'>나의 가장 큰 소망 나의 가장 큰 은혜
 주와 함께 동행하는 일</span>`,
-    tags: ["찬양"],
   },
   {
     id: "song-5",
@@ -131,7 +127,6 @@ export const songItems = [
 
     우리는 듣게 되리
     온 세상 가득한 승리의 함성</span>`,
-    tags: ["찬양"],
   },
   {
     id: "song-6",
@@ -152,7 +147,6 @@ export const songItems = [
 
     창조하신 모습 잃은 우리를
     예수님 닮게 빚으소서</span>`,
-    tags: ["찬양"],
   },
   {
     id: "song-7",
@@ -173,6 +167,5 @@ export const songItems = [
     주님만 의지해
     주 안에서 내 영혼 안전합니다
     </span>`,
-    tags: ["찬양"],
   },
 ];

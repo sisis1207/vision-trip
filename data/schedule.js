@@ -167,9 +167,14 @@ export const scheduleItems = [
       },
       { time: "18:00", title: "숙소 복귀 및 저녁 식사", note: "비전트립나눔" },
       {
-        time: "19:00 ~20:00",
+        time: "19:00 ~ 20:00",
         title: "저녁 예배",
         note: "본문 : 시편 62편 5절",
+      },
+      {
+        time: "20:00",
+        title: "온천",
+        note: "개인 정비",
       },
     ],
     tags: ["일정"],

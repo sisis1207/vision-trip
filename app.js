@@ -91,8 +91,8 @@ const tabs = document.querySelectorAll(".tab");
 const infoSummaryList = document.querySelector("#infoSummaryList");
 const infoTabs = document.querySelector("#infoTabs");
 const infoGroupButtons = document.querySelectorAll(".info-tab");
-const scheduleTabs = document.querySelector("#scheduleTabs");
-const scheduleDayButtons = document.querySelectorAll(".schedule-tab");
+const dayTabs = document.querySelector("#scheduleTabs");
+const dayTabButtons = document.querySelectorAll(".schedule-tab");
 const wordSearch = document.querySelector("#wordSearch");
 const wordSearchLabel = document.querySelector('label[for="wordSearchInput"]');
 const wordSearchInput = document.querySelector("#wordSearchInput");
@@ -107,7 +107,9 @@ const closeImageViewer = document.querySelector("#closeImageViewer");
 let activeCategory = null;
 let activeInfoGroup = "immigration";
 let activeScheduleDay = "day-1";
+let activeMemoDay = "day-1";
 let activeLyricsSongId = null;
+let expandedSongId = null;
 const activeSearchQueries = {
   song: "",
   word: "",
@@ -115,6 +117,8 @@ const activeSearchQueries = {
 let todayExpanded = false;
 let lyricsLarge = false;
 let wordsLarge = false;
+let memoLarge = false;
+let memoSaveTimer = null;
 let activeLyricsMode = "all";
 const lyricsModeOptions = [
   { value: "all", label: "전체" },
@@ -170,6 +174,10 @@ function getLyricsSongIdFromHash() {
 }
 
 function openCategory(category) {
+  if (category === "song") {
+    expandedSongId = null;
+  }
+
   window.location.hash = category;
 }
 
@@ -211,7 +219,7 @@ function showHome() {
   categoryStartButton.hidden = true;
   infoSummaryList.hidden = true;
   infoTabs.hidden = true;
-  scheduleTabs.hidden = true;
+  dayTabs.hidden = true;
   wordSearch.hidden = true;
   list.hidden = true;
   tabs.forEach((tab) => tab.classList.remove("active"));
@@ -271,10 +279,13 @@ function isStreetEvangelismInfoActive() {
   return activeCategory === "info" && activeInfoGroup === "street-evangelism";
 }
 
-function updateScheduleTabs() {
-  scheduleTabs.hidden = activeCategory !== "schedule";
-  scheduleDayButtons.forEach((button) => {
-    button.classList.toggle("active", button.dataset.day === activeScheduleDay);
+function updateDayTabs() {
+  const showsDayTabs = activeCategory === "schedule" || activeCategory === "memo";
+  const activeDay = activeCategory === "memo" ? activeMemoDay : activeScheduleDay;
+  dayTabs.hidden = !showsDayTabs;
+  dayTabs.classList.toggle("memo-day-tabs", activeCategory === "memo");
+  dayTabButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.day === activeDay);
   });
 }
 
@@ -323,19 +334,24 @@ function updateSearchControl() {
   wordSearchInput.value = activeSearchQueries[activeCategory];
 }
 
-function updateWordSizeToggle() {
+function updateSizeToggle() {
   const isWordPage = activeCategory === "word";
-  wordSizeToggle.hidden = !isWordPage;
+  const isMemoPage = activeCategory === "memo";
+  const isSizeTogglePage = isWordPage || isMemoPage;
+  const isLarge = isMemoPage ? memoLarge : wordsLarge;
+  const labelTarget = isMemoPage ? "메모" : "말씀";
 
-  if (!isWordPage) return;
+  wordSizeToggle.hidden = !isSizeTogglePage;
 
-  wordSizeToggle.classList.toggle("active", wordsLarge);
-  wordSizeToggle.title = wordsLarge ? "기본 크기" : "크게 보기";
+  if (!isSizeTogglePage) return;
+
+  wordSizeToggle.classList.toggle("active", isLarge);
+  wordSizeToggle.title = isLarge ? "기본 크기" : "크게 보기";
   wordSizeToggle.setAttribute(
     "aria-label",
-    wordsLarge ? "말씀 기본 크기로 보기" : "말씀 크게 보기",
+    isLarge ? `${labelTarget} 기본 크기로 보기` : `${labelTarget} 크게 보기`,
   );
-  wordSizeToggle.innerHTML = renderZoomIcon(wordsLarge);
+  wordSizeToggle.innerHTML = renderZoomIcon(isLarge);
 }
 
 function updateCategoryStartButton() {
@@ -480,6 +496,41 @@ function renderLyricsButton(item) {
   return `<button class="lyrics-button" type="button" data-lyrics-id="${escapeHtml(item.id)}" title="${escapeHtml(item.title)} 가사만 보기" aria-label="${escapeHtml(item.title)} 가사만 보기">♪</button>`;
 }
 
+function renderSongEntry(item) {
+  const isExpanded = expandedSongId === item.id;
+  const sheetId = `song-sheet-${item.id}`;
+
+  return `
+    <article class="entry song-entry ${isExpanded ? "expanded" : ""}">
+      <div>
+        <div class="entry-title-row song-title-row">
+          <button
+            class="song-title-button"
+            type="button"
+            data-song-toggle="${escapeHtml(item.id)}"
+            aria-label="${escapeHtml(`${item.title} 악보 ${isExpanded ? "접기" : "보기"}`)}"
+            aria-expanded="${isExpanded}"
+            aria-controls="${escapeHtml(sheetId)}"
+          >
+            <span class="song-title-text">${escapeHtml(item.title)}</span>
+          </button>
+          ${isExpanded ? renderLyricsButton(item) : ""}
+        </div>
+        ${
+          isExpanded
+            ? `<div class="song-sheet-panel" id="${escapeHtml(sheetId)}">
+                ${renderEntryContent(item)}
+                <div class="meta">
+                  ${renderTags(item.tags)}
+                </div>
+              </div>`
+            : ""
+        }
+      </div>
+    </article>
+  `;
+}
+
 function renderZoomIcon(isExpanded) {
   return `
     <svg
@@ -542,6 +593,10 @@ function renderLyricsModeButtons(availableOptions) {
 }
 
 function renderEntry(item) {
+  if (item.category === "song") {
+    return renderSongEntry(item);
+  }
+
   return `
     <article class="entry ${item.category === "word" && wordsLarge ? "word-large" : ""}">
       <div>
@@ -694,6 +749,14 @@ function getStoredText(key) {
   }
 }
 
+function hasStoredText(key) {
+  try {
+    return localStorage.getItem(key) !== null;
+  } catch {
+    return false;
+  }
+}
+
 function setStoredText(key, value) {
   try {
     localStorage.setItem(key, value);
@@ -702,19 +765,72 @@ function setStoredText(key, value) {
   }
 }
 
+function getMemoStorageKey(dayId = activeMemoDay) {
+  return `${memoStorageKey}:${dayId}`;
+}
+
+function getStoredMemo(dayId = activeMemoDay) {
+  const memoKey = getMemoStorageKey(dayId);
+  const memo = getStoredText(memoKey);
+  if (hasStoredText(memoKey) || dayId !== "day-1") return memo;
+
+  const legacyMemo = getStoredText(memoStorageKey);
+  if (legacyMemo) {
+    setStoredText(memoKey, legacyMemo);
+  }
+
+  return legacyMemo;
+}
+
+function updateMemoSaveStatus(statusElement, label) {
+  if (!statusElement) return;
+
+  statusElement.textContent = label;
+  statusElement.classList.toggle("saving", label === "입력 중...");
+}
+
+function getMemoDateLabel(dayId = activeMemoDay) {
+  const date = scheduleItems.find((item) => item.id === dayId)?.date;
+  const [year, month, day] = (date || "").split("-").map(Number);
+
+  if (!year || !month || !day) return "";
+
+  const dateValue = new Date(Date.UTC(year, month - 1, day));
+  return `${month}.${day} ${koreaWeekdays[dateValue.getUTCDay()]}`;
+}
+
 function renderMemoPage() {
+  const memoDayLabel = `${activeMemoDay.replace("day-", "")}일차`;
+  const memoDateLabel = getMemoDateLabel();
+  const memoTitle = memoDateLabel
+    ? `${memoDayLabel} · ${memoDateLabel}`
+    : memoDayLabel;
+
   list.innerHTML = `
-    <article class="entry tool-entry">
+    <article class="entry tool-entry memo-entry ${memoLarge ? "memo-large" : ""}">
+      <div class="memo-toolbar">
+        <strong>${escapeHtml(memoTitle)}</strong>
+      </div>
       <textarea class="memo-textarea" id="memoTextarea" placeholder="메모를 입력하세요."></textarea>
+      <div class="memo-footer">
+        <span class="memo-save-status" id="memoSaveStatus">저장됨</span>
+      </div>
     </article>
   `;
 
   const memoTextarea = document.querySelector("#memoTextarea");
+  const memoSaveStatus = document.querySelector("#memoSaveStatus");
   if (!memoTextarea) return;
 
-  memoTextarea.value = getStoredText(memoStorageKey);
+  memoTextarea.value = getStoredMemo();
   memoTextarea.addEventListener("input", () => {
-    setStoredText(memoStorageKey, memoTextarea.value);
+    updateMemoSaveStatus(memoSaveStatus, "입력 중...");
+    setStoredText(getMemoStorageKey(), memoTextarea.value);
+
+    clearTimeout(memoSaveTimer);
+    memoSaveTimer = setTimeout(() => {
+      updateMemoSaveStatus(memoSaveStatus, "저장됨");
+    }, 450);
   });
 }
 
@@ -737,7 +853,7 @@ function showLyricsPage() {
   showContentShell();
   infoSummaryList.hidden = true;
   infoTabs.hidden = true;
-  scheduleTabs.hidden = true;
+  dayTabs.hidden = true;
   wordSearch.hidden = true;
   pageTitle.textContent = `${song.title} 가사`;
   wordSizeToggle.hidden = true;
@@ -774,9 +890,9 @@ function showCategoryPage() {
     tab.classList.toggle("active", tab.dataset.category === activeCategory),
   );
   updateInfoTabs();
-  updateScheduleTabs();
+  updateDayTabs();
   updateSearchControl();
-  updateWordSizeToggle();
+  updateSizeToggle();
   updateCategoryStartButton();
 
   if (activeCategory === "memo") {
@@ -849,11 +965,16 @@ backButton.addEventListener("click", () => {
   render();
 });
 
-scheduleTabs.addEventListener("click", (event) => {
+dayTabs.addEventListener("click", (event) => {
   const button = event.target.closest?.("[data-day]");
-  if (!button || !scheduleTabs.contains(button)) return;
+  if (!button || !dayTabs.contains(button)) return;
 
-  activeScheduleDay = button.dataset.day;
+  if (activeCategory === "memo") {
+    activeMemoDay = button.dataset.day;
+  } else {
+    activeScheduleDay = button.dataset.day;
+  }
+
   render();
 });
 
@@ -878,8 +999,15 @@ wordSearchInput.addEventListener("input", () => {
 });
 
 wordSizeToggle.addEventListener("click", () => {
+  if (activeCategory === "memo") {
+    memoLarge = !memoLarge;
+    updateSizeToggle();
+    renderMemoPage();
+    return;
+  }
+
   wordsLarge = !wordsLarge;
-  updateWordSizeToggle();
+  updateSizeToggle();
   renderList();
 });
 
@@ -965,6 +1093,14 @@ function hideImageViewer() {
 }
 
 list.addEventListener("click", (event) => {
+  const songToggle = event.target.closest("[data-song-toggle]");
+  if (songToggle) {
+    const nextSongId = songToggle.dataset.songToggle;
+    expandedSongId = expandedSongId === nextSongId ? null : nextSongId;
+    renderList();
+    return;
+  }
+
   const wordReferenceLink = event.target.closest("[data-word-reference]");
   if (wordReferenceLink) {
     openWordReference(wordReferenceLink.dataset.wordReference);

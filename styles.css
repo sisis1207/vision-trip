@@ -574,6 +574,18 @@ h1 {
   margin-bottom: 18px;
 }
 
+.schedule-tabs.memo-day-tabs {
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.schedule-tabs.memo-day-tabs .schedule-tab {
+  min-height: 34px;
+  padding: 0 6px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+}
+
 .word-search {
   margin: -8px 0 18px;
 }
@@ -717,22 +729,60 @@ h1 {
   gap: 12px;
 }
 
-/* 메모 입력창 */
+/* 메모 화면 */
+.memo-entry {
+  display: grid;
+  gap: 12px;
+}
+
+.memo-toolbar {
+  display: flex;
+  align-items: center;
+  color: var(--accent-strong);
+}
+
+.memo-toolbar strong {
+  font-size: 1rem;
+}
+
+.memo-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -2px;
+}
+
+.memo-save-status {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  transition: color 0.18s ease;
+}
+
+.memo-save-status.saving {
+  color: var(--accent);
+}
+
 .memo-textarea {
   width: 100%;
-  min-height: 360px;
+  min-height: min(58vh, 520px);
   resize: vertical;
-  padding: 14px;
-  border: 1px solid rgba(37, 82, 74, 0.18);
+  padding: 16px;
+  border: 2px solid rgba(37, 82, 74, 0.24);
   border-radius: 8px;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
   line-height: 1.65;
 }
 
+.memo-large .memo-textarea {
+  font-size: 1.16rem;
+  line-height: 1.75;
+}
+
 .memo-textarea:focus {
-  border-color: var(--accent);
-  outline: 3px solid rgba(37, 82, 74, 0.14);
+  border-color: rgba(37, 82, 74, 0.72);
+  outline: 4px solid rgba(37, 82, 74, 0.14);
 }
 
 /* =========================================================
@@ -757,6 +807,52 @@ h1 {
   background: transparent;
   cursor: zoom-in;
   transition: transform 0.18s ease;
+}
+
+/* 찬양 악보 접힘/펼침 카드 */
+.song-entry {
+  padding: 14px 16px;
+}
+
+.song-entry.expanded {
+  padding: 18px;
+}
+
+.song-title-row {
+  margin: 0;
+}
+
+.song-entry.expanded .song-title-row {
+  margin-bottom: 10px;
+}
+
+.song-title-button {
+  flex: 1 1 auto;
+  display: flex;
+  min-width: 0;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+}
+
+.song-title-text {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.song-sheet-panel {
+  display: grid;
+  gap: 10px;
 }
 
 .lyrics-button {
@@ -1290,9 +1386,13 @@ h1 {
   }
 
   .memo-textarea {
-    min-height: 480px;
-    padding: 18px;
+    min-height: min(64vh, 640px);
+    padding: 20px;
     font-size: 1.02rem;
+  }
+
+  .memo-large .memo-textarea {
+    font-size: 1.18rem;
   }
 
   .song-image-button {
@@ -1423,6 +1523,10 @@ h1 {
 
   .schedule-tabs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .schedule-tabs.memo-day-tabs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .info-tabs {
