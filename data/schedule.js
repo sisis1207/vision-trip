@@ -1,11 +1,6 @@
 // 일정 화면과 오늘 일정 카드에서 사용하는 일정 데이터입니다.
 // id는 day-1 형식을 유지하고, date는 YYYY-MM-DD 형식으로 입력하세요.
 
-const sleepPrepEvent = {
-  time: "마무리",
-  title: "온천 및 취침 준비",
-};
-
 export const scheduleItems = [
   {
     // 1일차
@@ -35,17 +30,22 @@ export const scheduleItems = [
       },
       {
         section: "저녁 일정",
-        time: "16:00",
+        time: "15:00",
         title: "선교사님 OT 및 선교 일정 PT",
       },
-      { section: "저녁 일정", time: "18:00", title: "저녁 식사" },
+      { section: "저녁 일정", time: "16:00", title: "저녁 식사" },
       {
         section: "저녁 일정",
-        time: "20:30",
+        time: "17:30 ~ 18:30",
+        title: "온천",
+        note: "개인 정비 및 숙소 이동",
+      },
+      {
+        section: "저녁 일정",
+        time: "18:30 ~ 20:00",
         title: "저녁 예배",
         note: "선교사님 특강",
       },
-      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -57,32 +57,35 @@ export const scheduleItems = [
     date: "2026-08-12",
     schedule: [
       {
-        time: "08:00",
+        time: "07:00",
         title: "기상 및 아침 식사",
         note: "아침 당번 : 김영창, 박정원, 오윤지 ",
       },
       {
-        time: "09:30",
+        time: "08:30",
         title: "오전 예배",
         note: "본문 : 누가복음 13장 31~35절",
       },
       {
-        time: "10:30 ~ 12:00",
+        time: "09:30 ~ 10:30",
         title: "노방전도 준비 및 이동",
       },
-      { time: "12:00 ~ 13:00", title: "점심 식사" },
+      { time: "11:00 ~ 13:00", title: "점심 식사" },
       {
-        time: "13:00 ~ 18:00",
+        time: "13:00 ~ 16:00",
         title: "노방전도",
         note: "훗카이도국립대학, 오도리공원",
       },
-      { time: "18:00 ~ 21:00", title: "저녁 식사 및 복귀" },
       {
-        time: "21:30 ~ 22:30",
+        time: "16:00 ~ 18:00",
+        title: "저녁 식사 및 온천",
+        note: "개인 정비 및 숙소 이동",
+      },
+      {
+        time: "18:30 ~ 20:00",
         title: "저녁 집회",
         note: "본문 : 요한복음 10장 27절",
       },
-      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -128,16 +131,16 @@ export const scheduleItems = [
       },
       {
         section: "문화교류 일정",
-        time: "19:30",
-        title: "정리 및 마무리, 숙소복귀",
+        time: "19:30 ~ 20:30",
+        title: "정리 및 저녁 예배",
+        note: "본문 : 시편 62편 5절",
       },
       {
         section: "문화교류 일정",
-        time: "21:30",
-        title: "저녁 예배",
-        note: "본문 : 시편 62편 5절",
+        time: "21:00",
+        title: "온천",
+        note: "개인 정비 및 숙소 이동",
       },
-      { ...sleepPrepEvent },
     ],
     tags: ["일정"],
   },
@@ -149,7 +152,7 @@ export const scheduleItems = [
     date: "2026-08-14",
     schedule: [
       {
-        time: "08:00",
+        time: "07:00",
         title: "기상 및 아침 식사",
         note: "아침 당번 : 강호선, 김나연, 김준서",
       },
@@ -158,16 +161,16 @@ export const scheduleItems = [
         title: "아침 예배",
         note: "본문 : 누가복음 17장 7~10절",
       },
-      { time: "09:00", title: "조별 모임" },
       {
         time: "09:10 ~ 18:30",
         title: "비전트립",
       },
-      { time: "18:30", title: "숙소 복귀" },
-      { time: "19:00", title: "저녁 식사" },
-      { time: "20:00", title: "비전트립 나눔" },
-      { time: "21:00", title: "정리 예배", note: "본문 : 시편 62편 5절" },
-      { ...sleepPrepEvent },
+      { time: "18:00", title: "숙소 복귀 및 저녁 식사", note: "비전트립나눔" },
+      {
+        time: "19:00 ~20:00",
+        title: "저녁 예배",
+        note: "본문 : 시편 62편 5절",
+      },
     ],
     tags: ["일정"],
   },
@@ -179,11 +182,11 @@ export const scheduleItems = [
     date: "2026-08-15",
     schedule: [
       {
-        time: "08:00",
+        time: "07:00",
         title: "기상 및 아침 식사",
         note: "아침 당번 : 김영욱, 김자영, 노주아",
       },
-      { time: "09:00", title: "마무리 예배 및 공항 출발" },
+      { time: "08:00", title: "마무리 예배 및 공항 출발" },
       {
         section: "1팀 6명",
         time: "10:30",
